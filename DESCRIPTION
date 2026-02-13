@@ -61,6 +61,7 @@ Imports:
     lintr (>= 3.0.0),
     praise,
     rcmdcheck,
+    roxygen2,
     rstudioapi,
     tools,
     utils,
@@ -74,7 +75,7 @@ VignetteBuilder:
     knitr
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Config/testthat/edition: 3
 Collate: 
     'api.R'
@@ -86,6 +87,7 @@ Collate:
     'chk_lintr.R'
     'chk_namespace.R'
     'chk_rcmdcheck.R'
+    'chk_roxygen2.R'
     'chk_tnf.R'
     'gp.R'
     'package.R'
@@ -96,6 +98,7 @@ Collate:
     'prep_lintr.R'
     'prep_namespace.R'
     'prep_rcmdcheck.R'
+    'prep_roxygen2.R'
     'print.R'
     'rstudio_markers.R'
     'utils.R'

@@ -1,0 +1,8 @@
+Package: goodroxygen
+Title: Test Fixture for Good Roxygen
+Version: 0.0.1
+Author: Test
+Maintainer: Test <test@test.com>
+Description: Fixture package with proper roxygen documentation.
+License: MIT
+RoxygenNote: 7.3.3

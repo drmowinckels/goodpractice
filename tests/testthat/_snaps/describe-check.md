@@ -690,6 +690,27 @@
       $rcmdcheck_some_code_in_docs
       [1] "*Some* form of documentation should contain some code to run "
       
+      $roxygen2_has_examples
+      [1] "Exported functions have @examples or @example"
+      
+      $roxygen2_has_return
+      [1] "Exported functions have a @return tag"
+      
+      $roxygen2_has_export_or_nord
+      [1] "Functions have roxygen @export or @noRd tags"
+      
+      $roxygen2_nord_has_keywords_internal
+      [1] "Functions tagged @noRd also have @keywords internal"
+      
+      $roxygen2_no_export_and_keywords_internal
+      [1] "@export and @keywords internal should not co-exist"
+      
+      $roxygen2_examples_dontrun
+      [1] "Examples do not use \\dontrun"
+      
+      $roxygen2_examples_runnable
+      [1] "Examples have runnable code outside \\dontrun/\\donttest"
+      
       $truefalse_not_tf
       [1] "TRUE and FALSE is used, not T and F"
       
