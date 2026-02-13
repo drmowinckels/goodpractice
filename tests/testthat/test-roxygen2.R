@@ -160,20 +160,21 @@ describe("roxygen2_examples_runnable", {
   })
 })
 
-describe("roxygen2_deprecated_tags", {
-  it("detects deprecated @S3method tag", {
+describe("roxygen2_unknown_tags", {
+  it("detects unknown @S3method tag via parse warnings", {
     state <- list(path = "bad_roxygen", package = "badroxygen")
     state <- PREPS$roxygen2(state, quiet = TRUE)
-    result <- CHECKS$roxygen2_deprecated_tags$check(state)
+    expect_true(any(grepl("is not a known tag", state$roxygen2$parse_messages)))
+    result <- CHECKS$roxygen2_unknown_tags$check(state)
     expect_false(result$status)
     lines <- vapply(result$positions, `[[`, "", "line")
-    expect_true(any(grepl("@S3method", lines)))
+    expect_true(any(grepl("S3method", lines)))
   })
 
   it("passes on good fixture", {
     state <- list(path = "good_roxygen", package = "goodroxygen")
     state <- PREPS$roxygen2(state, quiet = TRUE)
-    result <- CHECKS$roxygen2_deprecated_tags$check(state)
+    result <- CHECKS$roxygen2_unknown_tags$check(state)
     expect_true(result$status)
   })
 })

@@ -32,7 +32,17 @@ find_function_defs <- function(path) {
 
 PREPS$roxygen2 <- function(state, path = state$path, quiet) {
   state$roxygen2 <- try({
-    blocks <- roxygen2::parse_package(path, env = NULL)
+    parse_messages <- character()
+    blocks <- withCallingHandlers(
+      roxygen2::parse_package(path, env = NULL),
+      message = function(m) {
+        msg <- conditionMessage(m)
+        if (grepl("is not a known tag", msg)) {
+          parse_messages <<- c(parse_messages, msg)
+          invokeRestart("muffleMessage")
+        }
+      }
+    )
 
     ns <- tryCatch(
       parseNamespaceFile(basename(path), dirname(path)),
@@ -53,7 +63,8 @@ PREPS$roxygen2 <- function(state, path = state$path, quiet) {
       blocks = blocks,
       namespace_exports = ns$exports,
       namespace_s3methods = s3methods,
-      function_defs = find_function_defs(path)
+      function_defs = find_function_defs(path),
+      parse_messages = parse_messages
     )
   }, silent = quiet)
 

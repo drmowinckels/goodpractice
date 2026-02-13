@@ -711,8 +711,8 @@
       $roxygen2_examples_runnable
       [1] "Examples have runnable code outside \\dontrun/\\donttest"
       
-      $roxygen2_deprecated_tags
-      [1] "No deprecated roxygen2 tags are used"
+      $roxygen2_unknown_tags
+      [1] "All roxygen2 tags are recognized"
       
       $roxygen2_valid_inherit
       [1] "@inheritParams/@inheritDotParams reference known functions"

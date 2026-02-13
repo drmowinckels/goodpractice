@@ -5,6 +5,7 @@ block_is_function <- function(block) {
   if (is.null(cl) || !is.call(cl) || length(cl) < 3) return(FALSE)
   op <- as.character(cl[[1]])
   if (!op %in% c("<-", "=", "<<-")) return(FALSE)
+  if (!is.name(cl[[2]])) return(FALSE)
   rhs <- cl[[3]]
   is.call(rhs) && identical(rhs[[1]], quote(`function`))
 }
@@ -297,43 +298,41 @@ CHECKS$roxygen2_examples_runnable <- make_check(
   }
 )
 
-CHECKS$roxygen2_deprecated_tags <- make_check(
+CHECKS$roxygen2_unknown_tags <- make_check(
 
-  description = "No deprecated roxygen2 tags are used",
+  description = "All roxygen2 tags are recognized",
   tags = c("documentation", "roxygen2"),
   preps = "roxygen2",
 
   gp = paste(
-    "Replace deprecated roxygen2 tags.",
-    "@S3method was removed in roxygen2 7.0.0;",
-    "use @export instead (S3 methods are detected automatically)."
+    "Fix or remove unknown roxygen2 tags.",
+    "This may indicate a typo, a removed tag like @S3method,",
+    "or a custom tag from an unregistered roclet."
   ),
 
   check = function(state) {
     if (inherits(state$roxygen2, "try-error")) return(roxygen2_na_result())
     rox <- state$roxygen2
+    msgs <- if (is.null(rox$parse_messages)) character() else
+      rox$parse_messages
     problems <- list()
 
-    deprecated_re <- "^#'\\s*@(S3method)\\b"
-
-    files <- unique(c(
-      vapply(rox$blocks, function(b) b$file, ""),
-      rox$function_defs$file
-    ))
-
-    for (f in files) {
-      if (!file.exists(f)) next
-      src <- readLines(f, warn = FALSE)
-      for (i in seq_along(src)) {
-        if (grepl(deprecated_re, src[i])) {
-          problems[[length(problems) + 1]] <- list(
-            filename = file.path("R", basename(f)),
-            line_number = as.integer(i),
-            column_number = NA_integer_,
-            ranges = list(),
-            line = trimws(src[i])
-          )
-        }
+    ansi_re <- "\033\\[[0-9;]*m"
+    tag_re <- "([A-Za-z0-9_./-]+\\.R):(\\d+):.*@(\\S+)\\s+is not a known tag"
+    for (msg in msgs) {
+      clean <- gsub(ansi_re, "", msg)
+      m <- regmatches(clean, regexec(tag_re, clean))[[1]]
+      if (length(m) >= 4) {
+        raw_file <- m[2]
+        fname <- if (startsWith(raw_file, "R/")) raw_file else
+          file.path("R", raw_file)
+        problems[[length(problems) + 1]] <- list(
+          filename = fname,
+          line_number = as.integer(m[3]),
+          column_number = NA_integer_,
+          ranges = list(),
+          line = paste0("@", m[4])
+        )
       }
     }
 
