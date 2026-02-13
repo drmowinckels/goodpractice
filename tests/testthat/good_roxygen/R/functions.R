@@ -15,3 +15,14 @@ good_func <- function(x) {
 internal_helper <- function() {
   NULL
 }
+
+#' Wrapper that inherits params
+#'
+#' @inheritParams good_func
+#' @return The input plus two.
+#' @export
+#' @examples
+#' wrapper_func(1)
+wrapper_func <- function(x) {
+  good_func(x) + 1
+}

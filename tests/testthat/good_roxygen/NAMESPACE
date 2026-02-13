@@ -1,1 +1,2 @@
 export(good_func)
+export(wrapper_func)

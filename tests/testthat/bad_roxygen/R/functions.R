@@ -60,3 +60,35 @@ dontrun_example <- function() {
 all_wrapped <- function() {
   NULL
 }
+
+#' S3 print using removed tag
+#'
+#' @return Print output.
+#' @S3method print deprecated_obj
+#' @examples
+#' print(structure(list(), class = "deprecated_obj"))
+print.deprecated_obj <- function(x, ...) {
+  cat("deprecated\n")
+}
+
+#' Function with bad inheritParams
+#'
+#' @inheritParams nonexistent_function
+#' @return Nothing.
+#' @export
+#' @examples
+#' bad_inherit(1)
+bad_inherit <- function(x) {
+  x
+}
+
+#' Function with bad inheritDotParams
+#'
+#' @inheritDotParams nonexistent_function
+#' @return Nothing.
+#' @export
+#' @examples
+#' bad_inherit_dots(x = 1)
+bad_inherit_dots <- function(...) {
+  list(...)
+}

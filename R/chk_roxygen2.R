@@ -126,7 +126,8 @@ CHECKS$roxygen2_has_export_or_nord <- make_check(
       documented_names <- c(documented_names, name)
 
       has_tag <- roxygen2::block_has_tags(block, c("export", "noRd", "rdname"))
-      in_ns <- name %in% rox$namespace_exports
+      in_ns <- name %in% rox$namespace_exports ||
+        name %in% rox$namespace_s3methods
       if (!has_tag && !in_ns) {
         problems[[length(problems) + 1]] <- make_block_position(block)
       }
@@ -136,6 +137,7 @@ CHECKS$roxygen2_has_export_or_nord <- make_check(
       fn <- rox$function_defs[i, ]
       if (fn$name %in% documented_names) next
       if (fn$name %in% rox$namespace_exports) next
+      if (fn$name %in% rox$namespace_s3methods) next
       problems[[length(problems) + 1]] <- list(
         filename = file.path("R", basename(fn$file)),
         line_number = as.integer(fn$line),
@@ -285,6 +287,94 @@ CHECKS$roxygen2_examples_runnable <- make_check(
 
       if (nzchar(code) && !nzchar(stripped)) {
         problems[[length(problems) + 1]] <- make_block_position(block)
+      }
+    }
+
+    list(
+      status = length(problems) == 0,
+      positions = problems
+    )
+  }
+)
+
+CHECKS$roxygen2_deprecated_tags <- make_check(
+
+  description = "No deprecated roxygen2 tags are used",
+  tags = c("documentation", "roxygen2"),
+  preps = "roxygen2",
+
+  gp = paste(
+    "Replace deprecated roxygen2 tags.",
+    "@S3method was removed in roxygen2 7.0.0;",
+    "use @export instead (S3 methods are detected automatically)."
+  ),
+
+  check = function(state) {
+    if (inherits(state$roxygen2, "try-error")) return(roxygen2_na_result())
+    rox <- state$roxygen2
+    problems <- list()
+
+    deprecated_re <- "^#'\\s*@(S3method)\\b"
+
+    files <- unique(c(
+      vapply(rox$blocks, function(b) b$file, ""),
+      rox$function_defs$file
+    ))
+
+    for (f in files) {
+      if (!file.exists(f)) next
+      src <- readLines(f, warn = FALSE)
+      for (i in seq_along(src)) {
+        if (grepl(deprecated_re, src[i])) {
+          problems[[length(problems) + 1]] <- list(
+            filename = file.path("R", basename(f)),
+            line_number = as.integer(i),
+            column_number = NA_integer_,
+            ranges = list(),
+            line = trimws(src[i])
+          )
+        }
+      }
+    }
+
+    list(
+      status = length(problems) == 0,
+      positions = problems
+    )
+  }
+)
+
+CHECKS$roxygen2_valid_inherit <- make_check(
+
+  description = "@inheritParams/@inheritDotParams reference known functions",
+  tags = c("documentation", "roxygen2"),
+  preps = "roxygen2",
+
+  gp = paste(
+    "Ensure functions referenced by @inheritParams and @inheritDotParams",
+    "exist within the package. Use pkg::func syntax for external functions."
+  ),
+
+  check = function(state) {
+    if (inherits(state$roxygen2, "try-error")) return(roxygen2_na_result())
+    rox <- state$roxygen2
+    pkg_fns <- rox$function_defs$name
+    problems <- list()
+
+    for (block in rox$blocks) {
+      inherit_tags <- c(
+        roxygen2::block_get_tags(block, "inheritParams"),
+        roxygen2::block_get_tags(block, "inheritDotParams")
+      )
+      if (length(inherit_tags) == 0) next
+
+      for (tag in inherit_tags) {
+        ref <- trimws(strsplit(trimws(tag$val), "\\s+")[[1]][1])
+        if (grepl("::", ref, fixed = TRUE)) next
+        if (!ref %in% pkg_fns) {
+          problems[[length(problems) + 1]] <- make_block_position(block)
+          break
+        }
       }
     }
 

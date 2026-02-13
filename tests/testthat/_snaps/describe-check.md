@@ -711,6 +711,12 @@
       $roxygen2_examples_runnable
       [1] "Examples have runnable code outside \\dontrun/\\donttest"
       
+      $roxygen2_deprecated_tags
+      [1] "No deprecated roxygen2 tags are used"
+      
+      $roxygen2_valid_inherit
+      [1] "@inheritParams/@inheritDotParams reference known functions"
+      
       $truefalse_not_tf
       [1] "TRUE and FALSE is used, not T and F"
       

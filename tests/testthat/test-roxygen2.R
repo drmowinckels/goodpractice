@@ -159,3 +159,39 @@ describe("roxygen2_examples_runnable", {
     expect_true(result$status)
   })
 })
+
+describe("roxygen2_deprecated_tags", {
+  it("detects deprecated @S3method tag", {
+    state <- list(path = "bad_roxygen", package = "badroxygen")
+    state <- PREPS$roxygen2(state, quiet = TRUE)
+    result <- CHECKS$roxygen2_deprecated_tags$check(state)
+    expect_false(result$status)
+    lines <- vapply(result$positions, `[[`, "", "line")
+    expect_true(any(grepl("@S3method", lines)))
+  })
+
+  it("passes on good fixture", {
+    state <- list(path = "good_roxygen", package = "goodroxygen")
+    state <- PREPS$roxygen2(state, quiet = TRUE)
+    result <- CHECKS$roxygen2_deprecated_tags$check(state)
+    expect_true(result$status)
+  })
+})
+
+describe("roxygen2_valid_inherit", {
+  it("detects @inheritParams referencing nonexistent function", {
+    state <- list(path = "bad_roxygen", package = "badroxygen")
+    state <- PREPS$roxygen2(state, quiet = TRUE)
+    result <- CHECKS$roxygen2_valid_inherit$check(state)
+    expect_false(result$status)
+    lines <- vapply(result$positions, `[[`, "", "line")
+    expect_true(any(grepl("bad_inherit", lines)))
+  })
+
+  it("passes on good fixture with valid @inheritParams", {
+    state <- list(path = "good_roxygen", package = "goodroxygen")
+    state <- PREPS$roxygen2(state, quiet = TRUE)
+    result <- CHECKS$roxygen2_valid_inherit$check(state)
+    expect_true(result$status)
+  })
+})
