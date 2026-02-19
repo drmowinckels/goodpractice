@@ -11,6 +11,27 @@ all_checks <- function() {
   names(CHECKS)
 }
 
+#' List the names of default checks (excludes optional check sets)
+#'
+#' @return Character vector of default check names
+#' @export
+
+default_checks <- function() {
+  setdiff(all_checks(), tidyverse_checks())
+}
+
+#' List the names of tidyverse style checks
+#'
+#' These checks are optional and not included in the default set.
+#' Add them via \code{checks = c(default_checks(), tidyverse_checks())}.
+#'
+#' @return Character vector of tidyverse check names
+#' @export
+
+tidyverse_checks <- function() {
+  grep("^tidyverse_", all_checks(), value = TRUE)
+}
+
 #' Describe one or more checks
 #'
 #' @param check_name Names of checks to be described.

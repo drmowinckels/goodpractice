@@ -7,7 +7,7 @@
 \usage{
 gp(
   path = ".",
-  checks = all_checks(),
+  checks = default_checks(),
   extra_preps = NULL,
   extra_checks = NULL,
   quiet = TRUE
@@ -17,7 +17,8 @@ gp(
 \item{path}{Path to a package root.}
 
 \item{checks}{Character vector, the checks to run. Defaults to
-all checks. Use \code{\link{all_checks}} to list all checks.}
+\code{\link{default_checks}}. Use \code{\link{all_checks}} to list all
+checks, or add optional sets like \code{\link{tidyverse_checks}}.}
 
 \item{extra_preps}{Custom preparation functions. See
 \code{\link{make_prep}} on creating preparation functions.}
