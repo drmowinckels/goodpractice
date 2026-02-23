@@ -8,6 +8,19 @@
 * New `r_file_extension` check: flags R scripts using `.r` or `.q` instead of `.R` (#121).
 * New `on_exit_add` check: flags `on.exit()` calls missing `add = TRUE` (#138).
 * New `on_exit_missing` check: detects functions that change global state (e.g. `options()`, `par()`, `setwd()`) without using `on.exit()` to restore it (#138).
+* New `spelling` check: flags misspelled words in documentation via `spelling::spell_check_package()` (#84).
+* New DESCRIPTION checks (#122, #85):
+  - `description_not_start_with_package`: Description should not start with
+    "This package"
+  - `description_urls_in_angle_brackets`: URLs in Description must be wrapped
+    in angle brackets
+  - `description_doi_format`: DOIs should use `<doi:...>` not full URLs
+  - `description_urls_not_http`: URLs should use https not http
+  - `no_description_duplicate_deps`: No duplicate packages across dependency
+    fields
+  - `description_valid_roles`: Authors@R roles must be valid MARC relator codes
+  - `description_pkgname_single_quoted`: Package names in Title/Description
+    must be single-quoted
 
 # goodpractice 1.0.5
 
