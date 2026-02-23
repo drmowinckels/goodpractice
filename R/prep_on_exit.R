@@ -47,6 +47,10 @@ STATE_CHANGING_CALLS <- c(
 )
 
 PREPS$on_exit <- function(state, path = state$path, quiet) {
+  enc <- tryCatch(
+    desc::desc_get_field("Encoding", default = "UTF-8", file = path),
+    error = function(e) "UTF-8"
+  )
   rfiles <- r_package_files(path)
   state_changers <- data.frame(
     file = character(),
@@ -68,8 +72,13 @@ PREPS$on_exit <- function(state, path = state$path, quiet) {
   for (f in rfiles) {
     if (!file.exists(f)) next
     exprs <- tryCatch(
-      parse(f, keep.source = TRUE),
-      error = function(e) NULL
+      parse(f, keep.source = TRUE, encoding = enc),
+      error = function(e) {
+        tryCatch(
+          parse(f, keep.source = FALSE, encoding = enc),
+          error = function(e) NULL
+        )
+      }
     )
     if (is.null(exprs) || length(exprs) == 0) next
 
