@@ -18,6 +18,27 @@
       $description_url
       [1] "URL in DESCRIPTION"
       
+      $description_not_start_with_package
+      [1] "Description does not start with package name reference"
+      
+      $description_urls_in_angle_brackets
+      [1] "URLs in Description are enclosed in angle brackets"
+      
+      $description_doi_format
+      [1] "DOIs in Description use <doi:...> format"
+      
+      $description_urls_not_http
+      [1] "URLs in Description use https not http"
+      
+      $no_description_duplicate_deps
+      [1] "No duplicate dependencies in DESCRIPTION"
+      
+      $description_valid_roles
+      [1] "Authors have valid roles in DESCRIPTION"
+      
+      $description_pkgname_single_quoted
+      [1] "Package names in Title/Description are single-quoted"
+      
       $description_bugreports
       [1] "BugReports in DESCRIPTION"
       
@@ -50,6 +71,9 @@
       
       $no_export_pattern
       [1] "exportPattern in NAMESPACE file"
+      
+      $r_file_extension
+      [1] "R scripts use .R file extension, not .r or .q"
       
       $rcmdcheck_package_directory_exists
       [1] "Package directory exists"
@@ -692,18 +716,21 @@
       
       $roxygen2_has_export_or_nord
       [1] "Documented functions have @export or @noRd"
-      
+
       $roxygen2_nord_has_keywords_internal
       [1] "@noRd functions also have @keywords internal"
-      
+
       $roxygen2_no_export_and_keywords_internal
       [1] "@export and @keywords internal should not co-exist"
-      
+
       $roxygen2_unknown_tags
       [1] "All roxygen2 tags are recognized"
-      
+
       $roxygen2_valid_inherit
       [1] "@inheritParams/@inheritDotParams reference known functions"
+
+      $spelling
+      [1] "No misspelled words in documentation"
       
       $truefalse_not_tf
       [1] "TRUE and FALSE is used, not T and F"
