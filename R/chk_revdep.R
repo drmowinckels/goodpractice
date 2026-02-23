@@ -2,7 +2,10 @@
 #' @include lists.R
 
 query_reverse_deps <- function(pkg_name) {
-  if (!curl::has_internet()) return(NA)
+  if (!curl::has_internet()) {
+    warning("Skipping reverse dependency check: no internet connection.")
+    return(NA)
+  }
 
   repos <- getOption("repos")["CRAN"]
   if (is.na(repos) || repos == "@CRAN@") {
