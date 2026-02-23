@@ -1,4 +1,4 @@
-get_result <- function(res, check) res$result[res$check == check]
+get_result <- function(res, check) res$passed[res$check == check]
 
 # -- uses_roxygen2 detection --------------------------------------------------
 
