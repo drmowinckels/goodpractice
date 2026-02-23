@@ -18,6 +18,27 @@
       $description_url
       [1] "URL in DESCRIPTION"
       
+      $description_not_start_with_package
+      [1] "Description does not start with package name reference"
+      
+      $description_urls_in_angle_brackets
+      [1] "URLs in Description are enclosed in angle brackets"
+      
+      $description_doi_format
+      [1] "DOIs in Description use <doi:...> format"
+      
+      $description_urls_not_http
+      [1] "URLs in Description use https not http"
+      
+      $no_description_duplicate_deps
+      [1] "No duplicate dependencies in DESCRIPTION"
+      
+      $description_valid_roles
+      [1] "Authors have valid roles in DESCRIPTION"
+      
+      $description_pkgname_single_quoted
+      [1] "Package names in Title/Description are single-quoted"
+      
       $description_bugreports
       [1] "BugReports in DESCRIPTION"
       
@@ -695,15 +716,18 @@
       
       $rd_has_examples
       [1] "Exported functions have \\examples in .Rd"
-      
+
       $rd_has_return
       [1] "Exported functions have \\value in .Rd"
-      
+
       $rd_examples_dontrun
       [1] "Examples do not use \\dontrun"
-      
+
       $rd_examples_runnable
       [1] "Examples have runnable code outside \\dontrun/\\donttest"
+
+      $spelling
+      [1] "No misspelled words in documentation"
       
       $truefalse_not_tf
       [1] "TRUE and FALSE is used, not T and F"
