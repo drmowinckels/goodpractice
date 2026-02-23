@@ -536,6 +536,60 @@ CHECKS$tidyverse_test_file_names <- make_check(
 
 ## --------------------------------------------------------------------
 
+find_top_level_functions <- function(path) {
+  rdir <- file.path(path, "R")
+  if (!dir.exists(rdir)) return(list())
+
+  enc <- tryCatch(
+    desc::desc_get_field("Encoding", default = "UTF-8", file = path),
+    error = function(e) "UTF-8"
+  )
+
+  rfiles <- list.files(rdir, pattern = "\\.[rR]$", full.names = TRUE)
+  result <- list()
+
+  for (f in rfiles) {
+    exprs <- tryCatch(
+      parse(f, keep.source = TRUE, encoding = enc),
+      error = function(e) {
+        tryCatch(
+          parse(f, keep.source = FALSE, encoding = enc),
+          error = function(e) NULL
+        )
+      }
+    )
+    if (is.null(exprs) || length(exprs) == 0) next
+
+    srcrefs <- attr(exprs, "srcref")
+
+    for (i in seq_along(exprs)) {
+      e <- exprs[[i]]
+      if (!is.call(e)) next
+
+      op <- deparse(e[[1]])
+      if (!(op %in% c("<-", "=")) || length(e) != 3) next
+      if (!is.call(e[[3]])) next
+      if (!identical(deparse(e[[3]][[1]]), "function")) next
+
+      name <- deparse(e[[2]])
+      line <- if (!is.null(srcrefs) && !is.null(srcrefs[[i]])) {
+        srcrefs[[i]][1]
+      } else {
+        NA_integer_
+      }
+
+      result[[length(result) + 1]] <- list(
+        name = name,
+        file = f,
+        line = line,
+        body = e[[3]][[3]]
+      )
+    }
+  }
+
+  result
+}
+
 CHECKS$tidyverse_no_missing <- make_check(
 
   description = "Functions do not use missing() to check arguments",
@@ -550,59 +604,87 @@ CHECKS$tidyverse_no_missing <- make_check(
   ),
 
   check = function(state) {
-    path <- state$path
-    rdir <- file.path(path, "R")
+    funcs <- find_top_level_functions(state$path)
+    problems <- list()
 
-    if (!dir.exists(rdir)) {
+    for (fn in funcs) {
+      if (uses_missing(fn$body)) {
+        problems[[length(problems) + 1]] <- list(
+          filename = file.path("R", basename(fn$file)),
+          line_number = fn$line,
+          column_number = NA_integer_,
+          ranges = list(),
+          line = fn$name
+        )
+      }
+    }
+
+    if (length(problems) == 0) {
+      list(status = TRUE, positions = list())
+    } else {
+      list(status = FALSE, positions = problems)
+    }
+  }
+)
+
+## --------------------------------------------------------------------
+
+CHECKS$tidyverse_export_order <- make_check(
+
+  description = "Exported functions are defined before internal helpers",
+  tags = c("style", "tidyverse"),
+  preps = "namespace",
+
+  gp = "define exported (user-facing) functions before internal
+        helper functions within each R source file.",
+
+  check = function(state) {
+    if (inherits(state$namespace, "try-error")) {
+      return(list(status = NA, positions = list()))
+    }
+
+    ns <- state$namespace
+    exported <- ns$exports
+
+    if (nrow(ns$S3methods) > 0) {
+      exported <- c(exported, paste0(ns$S3methods[, 1], ".", ns$S3methods[, 2]))
+    }
+
+    patterns <- ns$exportPatterns
+
+    is_exported <- function(name) {
+      if (name %in% exported) return(TRUE)
+      for (p in patterns) {
+        if (grepl(p, name)) return(TRUE)
+      }
+      FALSE
+    }
+
+    funcs <- find_top_level_functions(state$path)
+    if (length(funcs) == 0) {
       return(list(status = TRUE, positions = list()))
     }
 
-    enc <- tryCatch(
-      desc::desc_get_field("Encoding", default = "UTF-8", file = path),
-      error = function(e) "UTF-8"
-    )
-
-    rfiles <- list.files(rdir, pattern = "\\.[rR]$", full.names = TRUE)
+    by_file <- split(funcs, vapply(funcs, `[[`, "", "file"))
     problems <- list()
 
-    for (f in rfiles) {
-      exprs <- tryCatch(
-        parse(f, keep.source = TRUE, encoding = enc),
-        error = function(e) {
-          tryCatch(
-            parse(f, keep.source = FALSE, encoding = enc),
-            error = function(e) NULL
-          )
-        }
-      )
-      if (is.null(exprs) || length(exprs) == 0) next
+    for (file_funcs in by_file) {
+      if (length(file_funcs) < 2) next
 
-      srcrefs <- attr(exprs, "srcref")
+      is_exp <- vapply(file_funcs, function(fn) is_exported(fn$name), logical(1))
+      if (!any(is_exp) || all(is_exp)) next
 
-      for (i in seq_along(exprs)) {
-        e <- exprs[[i]]
-        if (!is.call(e)) next
+      last_export <- max(which(is_exp))
 
-        op <- deparse(e[[1]])
-        if (!(op %in% c("<-", "=")) || length(e) != 3) next
-        if (!is.call(e[[3]])) next
-        if (!identical(deparse(e[[3]][[1]]), "function")) next
-
-        name <- deparse(e[[2]])
-        body_expr <- e[[3]][[3]]
-
-        if (uses_missing(body_expr)) {
-          line <- if (!is.null(srcrefs) && !is.null(srcrefs[[i]])) {
-            srcrefs[[i]][1]
-          } else {
-            NA_integer_
-          }
+      for (j in seq_len(last_export - 1)) {
+        if (!is_exp[j]) {
+          fn <- file_funcs[[j]]
           problems[[length(problems) + 1]] <- list(
-            filename = file.path("R", basename(f)),
-            line_number = line,
+            filename = file.path("R", basename(fn$file)),
+            line_number = fn$line,
             column_number = NA_integer_,
             ranges = list(),
-            line = name
+            line = fn$name
           )
         }
       }

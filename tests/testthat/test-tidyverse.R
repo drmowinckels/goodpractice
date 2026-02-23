@@ -154,6 +154,20 @@ test_that("tidyverse_no_missing passes when missing() is not used", {
   expect_true(get_result(res_good, "tidyverse_no_missing"))
 })
 
+test_that("tidyverse_export_order fails when internal before exported", {
+  gp_res <- gp("bad_export_order", checks = "tidyverse_export_order")
+  res <- results(gp_res)
+  expect_false(get_result(res, "tidyverse_export_order"))
+
+  pos <- failed_positions(gp_res)$tidyverse_export_order
+  names <- vapply(pos, `[[`, "", "line")
+  expect_true("internal_helper" %in% names)
+})
+
+test_that("tidyverse_export_order passes with exportPattern", {
+  expect_true(get_result(res_good, "tidyverse_export_order"))
+})
+
 test_that("get_tidyverse_lintr_state returns NA on try-error", {
   state <- list(tidyverse_lintr = structure("error", class = "try-error"))
   result <- get_tidyverse_lintr_state(state, "brace_linter")
