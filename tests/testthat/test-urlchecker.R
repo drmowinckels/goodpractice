@@ -363,7 +363,7 @@ test_that("urlchecker_ok passes through gp() with no problems", {
   local_mocked_bindings(url_check = mock_url_check(db), .package = "urlchecker")
   gp_res <- gp("good", checks = "urlchecker_ok")
   res <- results(gp_res)
-  expect_true(res$result[res$check == "urlchecker_ok"])
+  expect_true(res$passed[res$check == "urlchecker_ok"])
 })
 
 test_that("urlchecker_ok fails through gp() with broken URLs", {
@@ -378,7 +378,7 @@ test_that("urlchecker_ok fails through gp() with broken URLs", {
   local_mocked_bindings(url_check = mock_url_check(db), .package = "urlchecker")
   gp_res <- gp("good", checks = "urlchecker_ok")
   res <- results(gp_res)
-  expect_false(res$result[res$check == "urlchecker_ok"])
+  expect_false(res$passed[res$check == "urlchecker_ok"])
   pos <- failed_positions(gp_res)$urlchecker_ok
   expect_length(pos, 1)
   expect_equal(pos[[1]]$line, "https://broken.com")
@@ -396,7 +396,7 @@ test_that("urlchecker_no_redirects fails through gp() with redirects", {
   local_mocked_bindings(url_check = mock_url_check(db), .package = "urlchecker")
   gp_res <- gp("good", checks = "urlchecker_no_redirects")
   res <- results(gp_res)
-  expect_false(res$result[res$check == "urlchecker_no_redirects"])
+  expect_false(res$passed[res$check == "urlchecker_no_redirects"])
 })
 
 test_that("urlchecker_no_redirects passes through gp() with no redirects", {
@@ -411,7 +411,7 @@ test_that("urlchecker_no_redirects passes through gp() with no redirects", {
   local_mocked_bindings(url_check = mock_url_check(db), .package = "urlchecker")
   gp_res <- gp("good", checks = "urlchecker_no_redirects")
   res <- results(gp_res)
-  expect_true(res$result[res$check == "urlchecker_no_redirects"])
+  expect_true(res$passed[res$check == "urlchecker_no_redirects"])
 })
 
 test_that("urlchecker checks return NA through gp() on prep failure", {
@@ -425,8 +425,8 @@ test_that("urlchecker checks return NA through gp() on prep failure", {
     "Prep step for urlchecker failed"
   )
   res <- results(gp_res)
-  expect_true(is.na(res$result[res$check == "urlchecker_ok"]))
-  expect_true(is.na(res$result[res$check == "urlchecker_no_redirects"]))
+  expect_true(is.na(res$passed[res$check == "urlchecker_ok"]))
+  expect_true(is.na(res$passed[res$check == "urlchecker_no_redirects"]))
 })
 
 test_that("urlchecker checks pass through gp() with empty db", {
@@ -435,8 +435,8 @@ test_that("urlchecker checks pass through gp() with empty db", {
   local_mocked_bindings(url_check = mock_url_check(db), .package = "urlchecker")
   gp_res <- gp("good", checks = c("urlchecker_ok", "urlchecker_no_redirects"))
   res <- results(gp_res)
-  expect_true(res$result[res$check == "urlchecker_ok"])
-  expect_true(res$result[res$check == "urlchecker_no_redirects"])
+  expect_true(res$passed[res$check == "urlchecker_ok"])
+  expect_true(res$passed[res$check == "urlchecker_no_redirects"])
 })
 
 # -- offline gate --------------------------------------------------------------
@@ -445,10 +445,10 @@ test_that("urlchecker checks return NA when offline", {
   local_mocked_bindings(has_internet = function() FALSE)
   expect_warning(
     gp_res <- gp("good", checks = "urlchecker_ok"),
-    "Prep step for urlchecker failed"
+    "Skipping URL checks: no internet connection"
   )
   res <- results(gp_res)
-  expect_true(is.na(res$result[res$check == "urlchecker_ok"]))
+  expect_true(is.na(res$passed[res$check == "urlchecker_ok"]))
 })
 
 # -- integration tests (network) ----------------------------------------------
@@ -458,7 +458,7 @@ test_that("urlchecker prep runs on good fixture", {
   skip_if_offline()
   gp_res <- gp("good", checks = "urlchecker_no_redirects")
   res <- results(gp_res)
-  result <- res$result[res$check == "urlchecker_no_redirects"]
+  result <- res$passed[res$check == "urlchecker_no_redirects"]
   expect_false(result)
 
   pos <- failed_positions(gp_res)$urlchecker_no_redirects
@@ -471,6 +471,6 @@ test_that("urlchecker_ok passes on package with valid URLs", {
   skip_if_offline()
   gp_res <- gp("good", checks = "urlchecker_ok")
   res <- results(gp_res)
-  result <- res$result[res$check == "urlchecker_ok"]
+  result <- res$passed[res$check == "urlchecker_ok"]
   expect_true(result)
 })
