@@ -7,10 +7,6 @@ has_invisible_call <- function(expr) {
     for (i in seq_along(expr)) {
       if (has_invisible_call(expr[[i]])) return(TRUE)
     }
-  } else if (is.recursive(expr)) {
-    for (i in seq_along(expr)) {
-      if (has_invisible_call(expr[[i]])) return(TRUE)
-    }
   }
   FALSE
 }
