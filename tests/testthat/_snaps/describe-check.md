@@ -725,5 +725,5 @@
       
       $spelling
       [1] "No misspelled words in documentation"
-
+      
 
