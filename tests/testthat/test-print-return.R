@@ -6,8 +6,8 @@ test_that("print_return_invisible fails when print method lacks invisible()", {
   expect_false(get_result(res, "print_return_invisible"))
 
   pos <- failed_positions(gp_res)$print_return_invisible
-  lines <- vapply(pos, `[[`, "", "line")
-  expect_true(any(grepl("print\\.myclass", lines)))
+  names <- vapply(pos, `[[`, "", "line")
+  expect_true("print.myclass" %in% names)
 })
 
 test_that("print_return_invisible passes when no print methods exist", {

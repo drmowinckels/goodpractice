@@ -1,5 +1,20 @@
 #' @include lists.R
 
+has_invisible_call <- function(expr) {
+  if (is.call(expr)) {
+    fn <- deparse(expr[[1]])
+    if (fn == "invisible") return(TRUE)
+    for (i in seq_along(expr)) {
+      if (has_invisible_call(expr[[i]])) return(TRUE)
+    }
+  } else if (is.recursive(expr)) {
+    for (i in seq_along(expr)) {
+      if (has_invisible_call(expr[[i]])) return(TRUE)
+    }
+  }
+  FALSE
+}
+
 CHECKS$print_return_invisible <- make_check(
 
   description = "Print methods return the object invisibly",
@@ -20,51 +35,55 @@ CHECKS$print_return_invisible <- make_check(
       return(list(status = TRUE, positions = list()))
     }
 
+    enc <- tryCatch(
+      desc::desc_get_field("Encoding", default = "UTF-8", file = path),
+      error = function(e) "UTF-8"
+    )
+
     rfiles <- list.files(rdir, pattern = "\\.[rR]$", full.names = TRUE)
     problems <- list()
 
     for (f in rfiles) {
-      lines <- readLines(f, warn = FALSE)
-      n <- length(lines)
-      i <- 1L
-
-      while (i <= n) {
-        line <- lines[i]
-        if (grepl("^\\s*print\\.\\w+\\s*(<-|=)\\s*function\\s*\\(", line)) {
-          def_start <- i
-          brace_count <- 0L
-          body_start <- i
-          found_open <- FALSE
-
-          for (j in i:n) {
-            chars <- strsplit(lines[j], "")[[1]]
-            for (ch in chars) {
-              if (ch == "{") {
-                if (!found_open) body_start <- j
-                found_open <- TRUE
-                brace_count <- brace_count + 1L
-              } else if (ch == "}") {
-                brace_count <- brace_count - 1L
-              }
-            }
-            if (found_open && brace_count == 0L) {
-              body_lines <- lines[body_start:j]
-              has_invisible <- any(grepl("\\binvisible\\s*\\(", body_lines))
-              if (!has_invisible) {
-                problems[[length(problems) + 1]] <- list(
-                  filename = file.path("R", basename(f)),
-                  line_number = def_start,
-                  column_number = NA_integer_,
-                  ranges = list(),
-                  line = trimws(lines[def_start])
-                )
-              }
-              i <- j
-              break
-            }
-          }
+      exprs <- tryCatch(
+        parse(f, keep.source = TRUE, encoding = enc),
+        error = function(e) {
+          tryCatch(
+            parse(f, keep.source = FALSE, encoding = enc),
+            error = function(e) NULL
+          )
         }
-        i <- i + 1L
+      )
+      if (is.null(exprs) || length(exprs) == 0) next
+
+      srcrefs <- attr(exprs, "srcref")
+
+      for (i in seq_along(exprs)) {
+        e <- exprs[[i]]
+        if (!is.call(e)) next
+
+        op <- deparse(e[[1]])
+        if (!(op %in% c("<-", "=")) || length(e) != 3) next
+        if (!is.call(e[[3]])) next
+        if (!identical(deparse(e[[3]][[1]]), "function")) next
+
+        name <- deparse(e[[2]])
+        if (!grepl("^print\\.", name)) next
+
+        body_expr <- e[[3]][[3]]
+        if (!has_invisible_call(body_expr)) {
+          line <- if (!is.null(srcrefs) && !is.null(srcrefs[[i]])) {
+            srcrefs[[i]][1]
+          } else {
+            NA_integer_
+          }
+          problems[[length(problems) + 1]] <- list(
+            filename = file.path("R", basename(f)),
+            line_number = line,
+            column_number = NA_integer_,
+            ranges = list(),
+            line = name
+          )
+        }
       }
     }
 
