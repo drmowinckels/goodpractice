@@ -8,6 +8,19 @@
 * New `r_file_extension` check: flags R scripts using `.r` or `.q` instead of `.R` (#121).
 * New `reverse_dependencies` check: queries CRAN for reverse dependencies and advises
   running `revdepcheck::revdep_check()` before submission.
+* New `spelling` check: flags misspelled words in documentation via `spelling::spell_check_package()` (#84).
+* New DESCRIPTION checks (#122, #85):
+  - `description_not_start_with_package`: Description should not start with
+    "This package"
+  - `description_urls_in_angle_brackets`: URLs in Description must be wrapped
+    in angle brackets
+  - `description_doi_format`: DOIs should use `<doi:...>` not full URLs
+  - `description_urls_not_http`: URLs should use https not http
+  - `no_description_duplicate_deps`: No duplicate packages across dependency
+    fields
+  - `description_valid_roles`: Authors@R roles must be valid MARC relator codes
+  - `description_pkgname_single_quoted`: Package names in Title/Description
+    must be single-quoted
 
 # goodpractice 1.0.5
 
