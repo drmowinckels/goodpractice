@@ -102,4 +102,72 @@ describe("reverse_dependencies check", {
     expect_match(msg, "and 2 more")
     expect_false(grepl("pkg11", msg))
   })
+
+  it("passes when package has zero reverse deps (empty character)", {
+    local_mocked_bindings(query_reverse_deps = function(pkg_name) character(0))
+    state <- make_desc_state()
+    result <- CHECKS$reverse_dependencies$check(state)
+    expect_true(result)
+  })
+
+  it("returns NA when query_reverse_deps returns NA (no internet)", {
+    local_mocked_bindings(query_reverse_deps = function(pkg_name) NA)
+    state <- make_desc_state()
+    result <- CHECKS$reverse_dependencies$check(state)
+    expect_true(is.na(result))
+  })
+})
+
+describe("query_reverse_deps", {
+
+  it("returns NA with warning when no internet", {
+    local_mocked_bindings(has_internet = function() FALSE, .package = "curl")
+    expect_warning(
+      result <- query_reverse_deps("testpkg"),
+      "no internet connection"
+    )
+    expect_true(is.na(result))
+  })
+
+  it("queries CRAN and returns reverse deps", {
+    fake_db <- matrix(
+      c("pkgA", "1.0", "testpkg"), nrow = 1,
+      dimnames = list("pkgA", c("Package", "Version", "Depends"))
+    )
+    local_mocked_bindings(has_internet = function() TRUE, .package = "curl")
+    local_mocked_bindings(
+      available.packages = function(...) fake_db,
+      .package = "utils"
+    )
+    local_mocked_bindings(
+      package_dependencies = function(pkg, db, reverse) list(testpkg = c("pkgA")),
+      .package = "tools"
+    )
+    result <- query_reverse_deps("testpkg")
+    expect_equal(result, "pkgA")
+  })
+
+  it("falls back to cloud.r-project.org when CRAN repo unset", {
+    fake_db <- matrix(
+      character(0), nrow = 0, ncol = 3,
+      dimnames = list(NULL, c("Package", "Version", "Depends"))
+    )
+    local_mocked_bindings(has_internet = function() TRUE, .package = "curl")
+    called_with <- NULL
+    local_mocked_bindings(
+      available.packages = function(repos, ...) {
+        called_with <<- repos
+        fake_db
+      },
+      .package = "utils"
+    )
+    local_mocked_bindings(
+      package_dependencies = function(pkg, db, reverse) list(testpkg = NULL),
+      .package = "tools"
+    )
+    withr::with_options(list(repos = c(CRAN = "@CRAN@")), {
+      query_reverse_deps("testpkg")
+    })
+    expect_equal(called_with, "https://cloud.r-project.org")
+  })
 })
