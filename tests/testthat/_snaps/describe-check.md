@@ -18,6 +18,27 @@
       $description_url
       [1] "URL in DESCRIPTION"
       
+      $description_not_start_with_package
+      [1] "Description does not start with package name reference"
+      
+      $description_urls_in_angle_brackets
+      [1] "URLs in Description are enclosed in angle brackets"
+      
+      $description_doi_format
+      [1] "DOIs in Description use <doi:...> format"
+      
+      $description_urls_not_http
+      [1] "URLs in Description use https not http"
+      
+      $no_description_duplicate_deps
+      [1] "No duplicate dependencies in DESCRIPTION"
+      
+      $description_valid_roles
+      [1] "Authors have valid roles in DESCRIPTION"
+      
+      $description_pkgname_single_quoted
+      [1] "Package names in Title/Description are single-quoted"
+      
       $description_bugreports
       [1] "BugReports in DESCRIPTION"
       
@@ -693,75 +714,78 @@
       $rcmdcheck_some_code_in_docs
       [1] "*Some* form of documentation should contain some code to run "
       
+      $spelling
+      [1] "No misspelled words in documentation"
+
       $tidyverse_brace_linter
       [1] "Opening brace on same line, closing brace on its own line"
-      
+
       $tidyverse_commas_linter
       [1] "Space after commas, not before"
-      
+
       $tidyverse_commented_code_linter
       [1] "No commented-out code"
-      
+
       $tidyverse_equals_na_linter
       [1] "Use is.na() not == NA"
-      
+
       $tidyverse_function_left_parentheses_linter
       [1] "No space before ( in function calls"
-      
+
       $tidyverse_indentation_linter
       [1] "Use 2-space indentation"
-      
+
       $tidyverse_infix_spaces_linter
       [1] "Spaces around infix operators"
-      
+
       $tidyverse_object_length_linter
       [1] "Object names are not too long"
-      
+
       $tidyverse_object_name_linter
       [1] "Object names use snake_case"
-      
+
       $tidyverse_object_usage_linter
       [1] "No unused variables or undefined globals"
-      
+
       $tidyverse_paren_body_linter
       [1] "No space after opening parenthesis"
-      
+
       $tidyverse_pipe_consistency_linter
       [1] "Consistent pipe operator usage"
-      
+
       $tidyverse_pipe_continuation_linter
       [1] "Pipe continuation on next line"
-      
+
       $tidyverse_quotes_linter
       [1] "Use double quotes for strings"
-      
+
       $tidyverse_return_linter
       [1] "Use implicit return, not explicit return()"
-      
+
       $tidyverse_spaces_inside_linter
       [1] "No spaces inside parentheses or brackets"
-      
+
       $tidyverse_spaces_left_parentheses_linter
       [1] "Space before ( in control flow"
-      
+
       $tidyverse_trailing_blank_lines_linter
       [1] "No trailing blank lines"
-      
+
       $tidyverse_trailing_whitespace_linter
       [1] "No trailing whitespace"
-      
+
       $tidyverse_vector_logic_linter
       [1] "Use && and || not & and | in if conditions"
-      
+
       $tidyverse_whitespace_linter
       [1] "No tab characters in code"
-      
+
       $tidyverse_r_file_names
       [1] "R file names use snake_case"
-      
+
       $tidyverse_test_file_names
       [1] "Test files mirror R source files"
-      
+
       $tidyverse_no_missing
       [1] "Functions do not use missing() to check arguments"
       

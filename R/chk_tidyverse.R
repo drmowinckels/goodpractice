@@ -1,6 +1,22 @@
 
 #' @include lists.R
 
+uses_missing <- function(expr) {
+  if (is.call(expr)) {
+    fn <- deparse(expr[[1]])
+    if (fn == "missing") return(TRUE)
+    if (fn == "function") return(FALSE)
+    for (i in seq_along(expr)) {
+      if (uses_missing(expr[[i]])) return(TRUE)
+    }
+  } else if (is.recursive(expr)) {
+    for (i in seq_along(expr)) {
+      if (uses_missing(expr[[i]])) return(TRUE)
+    }
+  }
+  FALSE
+}
+
 get_tidyverse_lintr_position <- function(lint) {
   lint[c("filename", "line_number", "column_number", "ranges", "line")]
 }
@@ -447,32 +463,65 @@ CHECKS$tidyverse_no_missing <- make_check(
 
   gp = paste(
     "avoid using missing() to check whether arguments were supplied.",
-    "It makes functions difficult to call programmatically.",
-    "Use a default value of NULL and check with is.null() instead."
+    "The tidyverse style guide recommends using NULL defaults with",
+    "is.null() instead, as missing() makes functions difficult to",
+    "call programmatically."
   ),
 
   check = function(state) {
-    rdir <- file.path(state$path, "R")
+    path <- state$path
+    rdir <- file.path(path, "R")
 
     if (!dir.exists(rdir)) {
       return(list(status = TRUE, positions = list()))
     }
 
+    enc <- tryCatch(
+      desc::desc_get_field("Encoding", default = "UTF-8", file = path),
+      error = function(e) "UTF-8"
+    )
+
     rfiles <- list.files(rdir, pattern = "\\.[rR]$", full.names = TRUE)
     problems <- list()
 
     for (f in rfiles) {
-      lines <- readLines(f, warn = FALSE)
-      for (i in seq_along(lines)) {
-        line <- lines[i]
-        if (grepl("^\\s*#", line)) next
-        if (grepl("\\bmissing\\s*\\(", line)) {
+      exprs <- tryCatch(
+        parse(f, keep.source = TRUE, encoding = enc),
+        error = function(e) {
+          tryCatch(
+            parse(f, keep.source = FALSE, encoding = enc),
+            error = function(e) NULL
+          )
+        }
+      )
+      if (is.null(exprs) || length(exprs) == 0) next
+
+      srcrefs <- attr(exprs, "srcref")
+
+      for (i in seq_along(exprs)) {
+        e <- exprs[[i]]
+        if (!is.call(e)) next
+
+        op <- deparse(e[[1]])
+        if (!(op %in% c("<-", "=")) || length(e) != 3) next
+        if (!is.call(e[[3]])) next
+        if (!identical(deparse(e[[3]][[1]]), "function")) next
+
+        name <- deparse(e[[2]])
+        body_expr <- e[[3]][[3]]
+
+        if (uses_missing(body_expr)) {
+          line <- if (!is.null(srcrefs) && !is.null(srcrefs[[i]])) {
+            srcrefs[[i]][1]
+          } else {
+            NA_integer_
+          }
           problems[[length(problems) + 1]] <- list(
             filename = file.path("R", basename(f)),
-            line_number = i,
+            line_number = line,
             column_number = NA_integer_,
             ranges = list(),
-            line = trimws(line)
+            line = name
           )
         }
       }

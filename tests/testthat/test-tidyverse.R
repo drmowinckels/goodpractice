@@ -126,8 +126,8 @@ test_that("tidyverse_no_missing fails when missing() is used", {
   expect_false(get_result(res, "tidyverse_no_missing"))
 
   pos <- failed_positions(gp_res)$tidyverse_no_missing
-  lines <- vapply(pos, `[[`, "", "line")
-  expect_true(any(grepl("missing", lines)))
+  names <- vapply(pos, `[[`, "", "line")
+  expect_true("my_func" %in% names)
 })
 
 test_that("tidyverse_no_missing passes when missing() is not used", {

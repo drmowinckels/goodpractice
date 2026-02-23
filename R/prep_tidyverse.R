@@ -2,19 +2,19 @@
 #' @include lists.R
 #' @importFrom lintr lint_package linters_with_defaults
 
-tidyverse_linters_to_lint <- lintr::linters_with_defaults(
-  assignment_linter = NULL,
-  line_length_linter = NULL,
-  semicolon_linter = NULL,
-  seq_linter = NULL,
-  T_and_F_symbol_linter = NULL
-)
-
 PREPS$tidyverse_lintr <- function(state, path = state$path, quiet) {
+  linters <- lintr::linters_with_defaults(
+    assignment_linter = NULL,
+    line_length_linter = NULL,
+    semicolon_linter = NULL,
+    seq_linter = NULL,
+    T_and_F_symbol_linter = NULL
+  )
+
   path <- normalizePath(path)
   suppressMessages(
     state$tidyverse_lintr <- try(
-      lint_package(path, linters = tidyverse_linters_to_lint),
+      lint_package(path, linters = linters),
       silent = TRUE
     )
   )
