@@ -2,6 +2,8 @@
 #' @include lists.R
 
 query_reverse_deps <- function(pkg_name) {
+  if (!curl::has_internet()) return(NA)
+
   repos <- getOption("repos")["CRAN"]
   if (is.na(repos) || repos == "@CRAN@") {
     repos <- "https://cloud.r-project.org"
