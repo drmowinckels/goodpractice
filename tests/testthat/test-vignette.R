@@ -36,6 +36,29 @@ test_that("vignette_no_setwd passes when no vignettes directory", {
   expect_true(get_result(res, "vignette_no_setwd"))
 })
 
+test_that("vignette checks ignore non-evaluated chunks", {
+  pkg <- withr::local_tempdir()
+  file.copy(
+    list.files("good", full.names = TRUE, recursive = TRUE),
+    pkg
+  )
+  dir.create(file.path(pkg, "vignettes"), showWarnings = FALSE)
+  writeLines(c(
+    "---",
+    "title: test",
+    "---",
+    "",
+    "```{r eval=FALSE}",
+    "rm(list = ls())",
+    "setwd('/tmp')",
+    "```"
+  ), file.path(pkg, "vignettes", "demo.Rmd"))
+
+  state <- list(path = pkg)
+  expect_true(CHECKS$vignette_no_rm_list$check(state)$status)
+  expect_true(CHECKS$vignette_no_setwd$check(state)$status)
+})
+
 test_that("vignette checks report correct positions", {
   gp_res <- gp("bad_vignettes",
                 checks = c("vignette_no_rm_list", "vignette_no_setwd"))
