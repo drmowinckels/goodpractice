@@ -716,7 +716,7 @@
       
       $reverse_dependencies
       [1] "Check for reverse dependencies on CRAN"
-
+      
       $spelling
       [1] "No misspelled words in documentation"
       
