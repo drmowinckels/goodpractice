@@ -13,8 +13,13 @@ run_url_check <- function(path, quiet) {
 }
 
 PREPS$urlchecker <- function(state, path = state$path, quiet) {
-  state$urlchecker <- try(run_url_check(path, quiet), silent = quiet)
+  if (!has_internet()) {
+    warning("Skipping URL checks: no internet connection.")
+    state$urlchecker <- try(stop("offline"), silent = TRUE)
+    return(state)
+  }
 
+  state$urlchecker <- try(run_url_check(path, quiet), silent = quiet)
   if (inherits(state$urlchecker, "try-error")) {
     warning("Prep step for urlchecker failed.")
   }
