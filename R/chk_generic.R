@@ -103,7 +103,7 @@ CHECKS$r_file_extension <- make_check(
       return(list(status = TRUE, positions = list()))
     }
 
-    files <- list.files(rdir, pattern = "\\.(r|q)$")
+    files <- list.files(rdir, pattern = "\\.(r|q)$", ignore.case = FALSE)
 
     if (length(files) == 0) {
       list(status = TRUE, positions = list())

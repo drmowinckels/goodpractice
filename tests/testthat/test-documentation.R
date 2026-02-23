@@ -2,9 +2,8 @@
 test_that("has_readme passes when README.md exists", {
   pkg <- withr::local_tempdir()
   file.copy(
-    list.files("good", full.names = TRUE),
-    pkg,
-    recursive = TRUE
+    list.files("good", full.names = TRUE, recursive = TRUE),
+    pkg
   )
   file.create(file.path(pkg, "README.md"))
 
@@ -15,9 +14,8 @@ test_that("has_readme passes when README.md exists", {
 test_that("has_readme passes when README.Rmd exists", {
   pkg <- withr::local_tempdir()
   file.copy(
-    list.files("good", full.names = TRUE),
-    pkg,
-    recursive = TRUE
+    list.files("good", full.names = TRUE, recursive = TRUE),
+    pkg
   )
   file.create(file.path(pkg, "README.Rmd"))
 
@@ -33,9 +31,8 @@ test_that("has_readme fails when no README", {
 test_that("has_news passes when NEWS.md exists", {
   pkg <- withr::local_tempdir()
   file.copy(
-    list.files("good", full.names = TRUE),
-    pkg,
-    recursive = TRUE
+    list.files("good", full.names = TRUE, recursive = TRUE),
+    pkg
   )
   file.create(file.path(pkg, "NEWS.md"))
 
@@ -46,9 +43,8 @@ test_that("has_news passes when NEWS.md exists", {
 test_that("has_news passes when inst/NEWS.Rd exists", {
   pkg <- withr::local_tempdir()
   file.copy(
-    list.files("good", full.names = TRUE),
-    pkg,
-    recursive = TRUE
+    list.files("good", full.names = TRUE, recursive = TRUE),
+    pkg
   )
   dir.create(file.path(pkg, "inst"), showWarnings = FALSE)
   file.create(file.path(pkg, "inst", "NEWS.Rd"))
