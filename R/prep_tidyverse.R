@@ -3,13 +3,7 @@
 #' @importFrom lintr lint_package linters_with_defaults
 
 PREPS$tidyverse_lintr <- function(state, path = state$path, quiet) {
-  linters <- lintr::linters_with_defaults(
-    assignment_linter = NULL,
-    line_length_linter = NULL,
-    semicolon_linter = NULL,
-    seq_linter = NULL,
-    T_and_F_symbol_linter = NULL
-  )
+  linters <- lintr::linters_with_defaults()
 
   path <- normalizePath(path)
   suppressMessages(

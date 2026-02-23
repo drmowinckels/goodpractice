@@ -780,6 +780,21 @@
       $tidyverse_whitespace_linter
       [1] "No tab characters in code"
 
+      $tidyverse_assignment_linter
+      [1] "Use <- for assignment, not ="
+
+      $tidyverse_line_length_linter
+      [1] "Code lines are not too long"
+
+      $tidyverse_semicolon_linter
+      [1] "No trailing semicolons"
+
+      $tidyverse_seq_linter
+      [1] "Use seq_len() or seq_along() instead of 1:length(...)"
+
+      $tidyverse_T_and_F_symbol_linter
+      [1] "Use TRUE and FALSE, not T and F"
+
       $tidyverse_r_file_names
       [1] "R file names use snake_case"
 

@@ -6,7 +6,9 @@ myFunc <- function(x ,y)
     w <- f (z)
     msg <- 'hello world'   
     x %>% sum() |> print()
-    a_very_long_and_excessively_named_function_variable_name <- w
+    a_very_long_and_excessively_named_function_variable_name_that_goes_well_beyond_the_one_hundred_twenty_char_limit_for_line_length <- w
+    result = T
+    idx <- 1:length(z); w <- z
 	return(z)
 }
 

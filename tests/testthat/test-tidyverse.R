@@ -110,6 +110,26 @@ test_that("tidyverse whitespace_linter fails on bad fixture", {
   expect_false(get_result(res_bad, "tidyverse_whitespace_linter"))
 })
 
+test_that("tidyverse assignment_linter fails on bad fixture", {
+  expect_false(get_result(res_bad, "tidyverse_assignment_linter"))
+})
+
+test_that("tidyverse line_length_linter fails on bad fixture", {
+  expect_false(get_result(res_bad, "tidyverse_line_length_linter"))
+})
+
+test_that("tidyverse semicolon_linter fails on bad fixture", {
+  expect_false(get_result(res_bad, "tidyverse_semicolon_linter"))
+})
+
+test_that("tidyverse seq_linter fails on bad fixture", {
+  expect_false(get_result(res_bad, "tidyverse_seq_linter"))
+})
+
+test_that("tidyverse T_and_F_symbol_linter fails on bad fixture", {
+  expect_false(get_result(res_bad, "tidyverse_T_and_F_symbol_linter"))
+})
+
 test_that("tidyverse_r_file_names catches bad file names", {
   expect_false(get_result(res_bad, "tidyverse_r_file_names"))
   expect_true(get_result(res_good, "tidyverse_r_file_names"))

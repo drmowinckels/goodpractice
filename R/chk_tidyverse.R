@@ -372,6 +372,87 @@ CHECKS$tidyverse_whitespace_linter <- make_check(
 )
 
 ## --------------------------------------------------------------------
+
+CHECKS$tidyverse_assignment_linter <- make_check(
+
+  description = "Use <- for assignment, not =",
+  tags = c("style", "tidyverse"),
+  preps = "tidyverse_lintr",
+
+  gp = "use '<-' for assignment instead of '='. This is the
+        standard convention in R and makes code easier to read.",
+
+  check = function(state) {
+    get_tidyverse_lintr_state(state, "assignment_linter")
+  }
+)
+
+## --------------------------------------------------------------------
+
+CHECKS$tidyverse_line_length_linter <- make_check(
+
+  description = "Code lines are not too long",
+  tags = c("style", "tidyverse"),
+  preps = "tidyverse_lintr",
+
+  gp = "keep code lines to a reasonable length for readability.",
+
+  check = function(state) {
+    get_tidyverse_lintr_state(state, "line_length_linter")
+  }
+)
+
+## --------------------------------------------------------------------
+
+CHECKS$tidyverse_semicolon_linter <- make_check(
+
+  description = "No trailing semicolons",
+  tags = c("style", "tidyverse"),
+  preps = "tidyverse_lintr",
+
+  gp = "omit trailing semicolons from code lines. They are not
+        needed in R and most style guides forbid them.",
+
+  check = function(state) {
+    get_tidyverse_lintr_state(state, "semicolon_linter")
+  }
+)
+
+## --------------------------------------------------------------------
+
+CHECKS$tidyverse_seq_linter <- make_check(
+
+  description = "Use seq_len() or seq_along() instead of 1:length(...)",
+  tags = c("warning", "tidyverse"),
+  preps = "tidyverse_lintr",
+
+  gp = "avoid 1:length(...), 1:nrow(...), and similar expressions.
+        They are error prone when the right hand side is zero.
+        Use seq_len() or seq_along() instead.",
+
+  check = function(state) {
+    get_tidyverse_lintr_state(state, "seq_linter")
+  }
+)
+
+## --------------------------------------------------------------------
+
+CHECKS$tidyverse_T_and_F_symbol_linter <- make_check(
+
+  description = "Use TRUE and FALSE, not T and F",
+  tags = c("style", "tidyverse"),
+  preps = "tidyverse_lintr",
+
+  gp = "use TRUE and FALSE instead of T and F. T and F are not
+        reserved words and can be overwritten, leading to unexpected
+        behaviour.",
+
+  check = function(state) {
+    get_tidyverse_lintr_state(state, "T_and_F_symbol_linter")
+  }
+)
+
+## --------------------------------------------------------------------
 ## Non-lintr structural checks
 ## --------------------------------------------------------------------
 
