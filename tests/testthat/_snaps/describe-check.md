@@ -74,9 +74,12 @@
       
       $on_exit_add
       [1] "on.exit() calls use add = TRUE"
-      
+
       $on_exit_missing
       [1] "State-changing functions use on.exit() to restore state"
+
+      $print_return_invisible
+      [1] "Print methods return the object invisibly"
       
       $r_file_extension
       [1] "R scripts use .R file extension, not .r or .q"
@@ -719,6 +722,18 @@
       
       $rcmdcheck_some_code_in_docs
       [1] "*Some* form of documentation should contain some code to run "
+      
+      $rd_has_examples
+      [1] "Exported functions have \\examples in .Rd"
+      
+      $rd_has_return
+      [1] "Exported functions have \\value in .Rd"
+      
+      $rd_examples_dontrun
+      [1] "Examples do not use \\dontrun"
+      
+      $rd_examples_runnable
+      [1] "Examples have runnable code outside \\dontrun/\\donttest"
       
       $spelling
       [1] "No misspelled words in documentation"
