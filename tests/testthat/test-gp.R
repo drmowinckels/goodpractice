@@ -30,7 +30,7 @@ test_that("option excludes checks by prep name", {
   bad1 <- system.file("bad1", package = "goodpractice")
   withr::local_options(goodpractice.exclude_preps = "covr")
   expect_warning(
-    gp_res <- gp(bad1),
+    gp_res <- gp(bad1, checks = NULL),
     "Excluding checks"
   )
   expect_false("covr" %in% checks(gp_res))
@@ -41,7 +41,7 @@ test_that("envvar excludes checks by prep name", {
   withr::local_options(goodpractice.exclude_preps = NULL)
   withr::local_envvar(GP_EXCLUDE_PREPS = "covr")
   expect_warning(
-    gp_res <- gp(bad1),
+    gp_res <- gp(bad1, checks = NULL),
     "Excluding checks"
   )
   expect_false("covr" %in% checks(gp_res))
@@ -52,7 +52,7 @@ test_that("option takes precedence over envvar", {
   withr::local_options(goodpractice.exclude_preps = "covr")
   withr::local_envvar(GP_EXCLUDE_PREPS = "lintr")
   expect_warning(
-    gp_res <- gp(bad1),
+    gp_res <- gp(bad1, checks = NULL),
     "Excluding checks"
   )
   expect_false("covr" %in% checks(gp_res))
@@ -72,7 +72,7 @@ test_that("multiple preps can be excluded", {
     goodpractice.exclude_preps = c("covr", "cyclocomp")
   )
   expect_warning(
-    gp_res <- gp(bad1),
+    gp_res <- gp(bad1, checks = NULL),
     "Excluding checks"
   )
   expect_false("covr" %in% checks(gp_res))
