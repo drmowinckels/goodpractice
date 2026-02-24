@@ -190,3 +190,54 @@ test_that("get_tidyverse_lintr_state returns NA on try-error", {
   expect_true(is.na(result$status))
   expect_equal(result$positions, list())
 })
+
+test_that("tidyverse_no_missing ignores missing() inside nested functions", {
+  pkg <- withr::local_tempdir()
+  dir.create(file.path(pkg, "R"))
+  writeLines(
+    c(
+      "Package: nesttest", "Title: Test", "Version: 1.0.0",
+      "Author: Test", "Maintainer: Test <test@test.com>",
+      "Description: Test.", "License: GPL-2"
+    ),
+    file.path(pkg, "DESCRIPTION")
+  )
+  writeLines(
+    c(
+      "outer <- function(x) {",
+      "  inner <- function(y) missing(y)",
+      "  inner(x)",
+      "}"
+    ),
+    file.path(pkg, "R", "funcs.R")
+  )
+
+  gp_res <- gp(pkg, checks = "tidyverse_no_missing")
+  res <- results(gp_res)
+  expect_true(get_result(res, "tidyverse_no_missing"))
+})
+
+test_that("find_top_level_functions handles edge cases", {
+  find_funcs <- goodpractice:::find_top_level_functions
+  pkg <- withr::local_tempdir()
+  writeLines(
+    c(
+      "Package: edgetest", "Title: Test", "Version: 1.0.0",
+      "Author: Test", "Maintainer: Test <test@test.com>",
+      "Description: Test.", "License: GPL-2"
+    ),
+    file.path(pkg, "DESCRIPTION")
+  )
+
+  expect_equal(find_funcs(pkg), list())
+
+  dir.create(file.path(pkg, "R"))
+  writeLines(character(), file.path(pkg, "R", "empty.R"))
+  expect_equal(find_funcs(pkg), list())
+
+  writeLines(
+    c("x <- 42", "library(stats)", "y <- sum(1:10)"),
+    file.path(pkg, "R", "misc.R")
+  )
+  expect_equal(find_funcs(pkg), list())
+})

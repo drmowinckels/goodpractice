@@ -9,10 +9,6 @@ uses_missing <- function(expr) {
     for (i in seq_along(expr)) {
       if (uses_missing(expr[[i]])) return(TRUE)
     }
-  } else if (is.recursive(expr)) {
-    for (i in seq_along(expr)) {
-      if (uses_missing(expr[[i]])) return(TRUE)
-    }
   }
   FALSE
 }
@@ -551,12 +547,7 @@ find_top_level_functions <- function(path) {
   for (f in rfiles) {
     exprs <- tryCatch(
       parse(f, keep.source = TRUE, encoding = enc),
-      error = function(e) {
-        tryCatch(
-          parse(f, keep.source = FALSE, encoding = enc),
-          error = function(e) NULL
-        )
-      }
+      error = function(e) NULL
     )
     if (is.null(exprs) || length(exprs) == 0) next
 
