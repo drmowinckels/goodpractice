@@ -6,6 +6,7 @@
 * If your editor supports it, goodpractice now prints clickable hyperlinks to console.
 - New `describe_check()` function to print descriptions of all implemented checks (@152)
 * New `r_file_extension` check: flags R scripts using `.r` or `.q` instead of `.R` (#121).
+* New `print_return_invisible` check: flags print methods that don't return `invisible(x)` (#49).
 * New `vignette_no_rm_list` check: flags `rm(list = ls())` in vignettes (#20).
 * New `vignette_no_setwd` check: flags `setwd()` in vignettes (#21).
 * New `spelling` check: flags misspelled words in documentation via `spelling::spell_check_package()` (#84).
