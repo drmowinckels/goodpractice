@@ -6,9 +6,6 @@ has_internet <- function() {
 }
 
 run_url_check <- function(path, quiet) {
-  if (!has_internet()) {
-    stop("No internet connection available.")
-  }
   urlchecker::url_check(path, progress = !quiet)
 }
 
