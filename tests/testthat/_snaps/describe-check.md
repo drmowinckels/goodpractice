@@ -72,6 +72,9 @@
       $no_export_pattern
       [1] "exportPattern in NAMESPACE file"
       
+      $print_return_invisible
+      [1] "Print methods return the object invisibly"
+      
       $r_file_extension
       [1] "R scripts use .R file extension, not .r or .q"
       
@@ -713,6 +716,18 @@
       
       $rcmdcheck_some_code_in_docs
       [1] "*Some* form of documentation should contain some code to run "
+      
+      $rd_has_examples
+      [1] "Exported functions have \\examples in .Rd"
+      
+      $rd_has_return
+      [1] "Exported functions have \\value in .Rd"
+      
+      $rd_examples_dontrun
+      [1] "Examples do not use \\dontrun"
+      
+      $rd_examples_runnable
+      [1] "Examples have runnable code outside \\dontrun/\\donttest"
       
       $spelling
       [1] "No misspelled words in documentation"

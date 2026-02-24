@@ -12,6 +12,7 @@
 * If your editor supports it, goodpractice now prints clickable hyperlinks to console.
 - New `describe_check()` function to print descriptions of all implemented checks (@152)
 * New `r_file_extension` check: flags R scripts using `.r` or `.q` instead of `.R` (#121).
+* New `print_return_invisible` check: flags print methods that don't return `invisible(x)` (#49).
 * New `spelling` check: flags misspelled words in documentation via `spelling::spell_check_package()` (#84).
 * New DESCRIPTION checks (#122, #85):
   - `description_not_start_with_package`: Description should not start with
