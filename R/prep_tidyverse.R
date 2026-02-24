@@ -1,14 +1,11 @@
-
 #' @include lists.R
-#' @importFrom lintr lint_package linters_with_defaults
+#' @importFrom lintr lint_package
 
 PREPS$tidyverse_lintr <- function(state, path = state$path, quiet) {
-  linters <- lintr::linters_with_defaults()
-
   path <- normalizePath(path)
   suppressMessages(
     state$tidyverse_lintr <- try(
-      lint_package(path, linters = linters),
+      lint_package(path),
       silent = TRUE
     )
   )

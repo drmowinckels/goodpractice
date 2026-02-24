@@ -168,6 +168,22 @@ test_that("tidyverse_export_order passes with exportPattern", {
   expect_true(get_result(res_good, "tidyverse_export_order"))
 })
 
+test_that("tidyverse lintr checks respect .lintr config", {
+  pkg <- withr::local_tempdir()
+  file.copy(
+    list.files("bad_tidyverse", full.names = TRUE, recursive = TRUE),
+    pkg, recursive = TRUE
+  )
+  writeLines(
+    "linters: linters_with_defaults(brace_linter = NULL)",
+    file.path(pkg, ".lintr")
+  )
+
+  gp_res <- gp(pkg, checks = "tidyverse_brace_linter")
+  res <- results(gp_res)
+  expect_true(res$passed[res$check == "tidyverse_brace_linter"])
+})
+
 test_that("get_tidyverse_lintr_state returns NA on try-error", {
   state <- list(tidyverse_lintr = structure("error", class = "try-error"))
   result <- get_tidyverse_lintr_state(state, "brace_linter")

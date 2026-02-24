@@ -11,5 +11,8 @@ Character vector of tidyverse check names
 }
 \description{
 These checks are optional and not included in the default set.
+They are powered by \code{\link[lintr]{lint_package}} using lintr's
+default linter set and respect any \code{.lintr} configuration file
+in the package root (e.g. to disable specific linters or add exclusions).
 Add them via \code{checks = c(default_checks(), tidyverse_checks())}.
 }
