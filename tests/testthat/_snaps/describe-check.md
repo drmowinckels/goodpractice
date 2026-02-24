@@ -719,16 +719,16 @@
       
       $rd_has_examples
       [1] "Exported functions have \\examples in .Rd"
-
+      
       $rd_has_return
       [1] "Exported functions have \\value in .Rd"
-
+      
       $rd_examples_dontrun
       [1] "Examples do not use \\dontrun"
-
+      
       $rd_examples_runnable
       [1] "Examples have runnable code outside \\dontrun/\\donttest"
-
+      
       $reverse_dependencies
       [1] "Check for reverse dependencies on CRAN"
       
