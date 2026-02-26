@@ -66,6 +66,7 @@ Imports:
     cyclocomp (>= 1.1.0),
     desc,
     jsonlite,
+    knitr,
     lintr (>= 3.0.0),
     praise,
     rcmdcheck,
@@ -76,7 +77,6 @@ Imports:
     whoami,
     withr
 Suggests:
-    knitr,
     rmarkdown,
     testthat (>= 3.0.0)
 Remotes:
