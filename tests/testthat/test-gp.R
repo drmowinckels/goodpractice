@@ -79,8 +79,10 @@ test_that("multiple preps can be excluded", {
   expect_false("cyclocomp" %in% checks(gp_res))
 })
 
-test_that("empty exclusion has no effect", {
-  withr::local_options(goodpractice.exclude_preps = character())
-  gp_res <- gp("good", checks = c("no_description_depends", "description_url"))
-  expect_length(checks(gp_res), 2)
+test_that("empty exclusion returns checks unchanged", {
+  withr::local_options(goodpractice.exclude_preps = NULL)
+  withr::local_envvar(GP_EXCLUDE_PREPS = "")
+  checks <- c("no_description_depends", "covr")
+  result <- goodpractice:::exclude_checks_by_prep(checks, goodpractice:::CHECKS)
+  expect_equal(result, checks)
 })
