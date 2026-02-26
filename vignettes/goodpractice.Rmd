@@ -92,11 +92,56 @@ results(g)[1:5,]
 Note that the code coverage could not be calculated. The corresponding check does not show up in the failed checks (because it was not carried out) and the result is `NA`. It is also possible to export the results to a JSON file with `export_json()`.
 
 
+## Tidyverse style checks
+
+The default set of checks focuses on universal good practices — things every
+R package benefits from regardless of coding style. But if your team follows
+the [tidyverse style guide](https://style.tidyverse.org/), there is an
+optional set of checks for that too.
+
+These checks are not included in `default_checks()`. You opt in explicitly:
+
+```{r, eval = FALSE}
+# run default checks plus tidyverse style checks
+g <- gp(".", checks = c(default_checks(), tidyverse_checks()))
+
+# or run only the tidyverse checks
+g <- gp(".", checks = tidyverse_checks())
+```
+
+Most tidyverse checks are powered by [**lintr**](https://cran.r-project.org/package=lintr)
+under the hood — brace placement, spacing, naming conventions, and so on.
+They run `lintr::lint_package()` once and share the results across all
+lintr-based checks. If your package already has a `.lintr` configuration
+file, those settings are respected: disabled linters stay disabled,
+exclusions are honoured.
+
+A handful of tidyverse checks go beyond what lintr covers. These look at
+package structure directly — whether R file names use snake_case, whether
+test files mirror source files, whether functions rely on `missing()` instead
+of `NULL` defaults, and whether exported functions appear before internal
+helpers in each file.
+
+```{r}
+# see all available tidyverse checks
+tidyverse_checks()
+```
+
+
 ## Excluding check groups
 
-Running all checks can be time-consuming, especially when some preparation steps like code coverage (`covr`) or `R CMD check` (`rcmdcheck`) are slow. Instead of listing individual checks to include, you can exclude entire groups of checks by their preparation step name.
+Running all 230+ checks on a large package can take a while. The checks
+themselves are fast — what takes time is the data gathering that happens
+before them. **goodpractice** calls these _preparation steps_ ("preps").
+The `lintr` prep runs the linter once, `covr` computes code coverage once,
+`rcmdcheck` runs `R CMD check` once, and every check in that group draws
+from the same results.
 
-Each check in **goodpractice** depends on one or more preparation steps. The available prep names are: `covr`, `cyclocomp`, `description`, `expressions`, `lintr`, `namespace`, and `rcmdcheck`. Excluding a prep name removes all checks that depend on it.
+So when `covr` alone takes three minutes and all you care about right now is
+code style, why wait? Instead of picking individual checks by name, you can
+exclude an entire prep — and every check that depends on it goes with it.
+The available prep names are: `covr`, `cyclocomp`, `description`,
+`expressions`, `lintr`, `namespace`, and `rcmdcheck`.
 
 ### Using an R option
 
