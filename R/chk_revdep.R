@@ -16,26 +16,25 @@ query_reverse_deps <- function(pkg_name) {
   deps[[pkg_name]]
 }
 
+revdep_info_message <- function(revdeps) {
+  n <- length(revdeps)
+  dep_list <- paste(utils::head(revdeps, 10), collapse = ", ")
+  suffix <- if (n > 10) paste0(", ... and ", n - 10, " more") else ""
+  cli::cli_alert_info(paste0(
+    "This package has ", n, " reverse ",
+    if (n == 1) "dependency" else "dependencies",
+    " on CRAN: ", dep_list, suffix,
+    ". Consider running {.code revdepcheck::revdep_check()} before submission."
+  ))
+}
+
 CHECKS$reverse_dependencies <- make_check(
 
   description = "Check for reverse dependencies on CRAN",
   tags = c("info", "CRAN"),
   preps = "description",
 
-  gp = function(state) {
-    res <- state$checks$reverse_dependencies
-    revdeps <- vapply(res$positions, "[[", "", "filename")
-    n <- length(revdeps)
-    paste0(
-      "run reverse dependency checks before CRAN submission. ",
-      "This package has ", n, " reverse ",
-      if (n == 1) "dependency" else "dependencies",
-      " on CRAN: ",
-      paste(utils::head(revdeps, 10), collapse = ", "),
-      if (n > 10) paste0(", ... and ", n - 10, " more") else "",
-      ". Use `revdepcheck::revdep_check()` to verify they still pass."
-    )
-  },
+  gp = "run reverse dependency checks before CRAN submission.",
 
   check = function(state) {
     if (inherits(state$description, "try-error")) return(NA)
@@ -51,17 +50,7 @@ CHECKS$reverse_dependencies <- make_check(
     if (identical(revdeps, NA)) return(NA)
     if (is.null(revdeps) || length(revdeps) == 0) return(TRUE)
 
-    list(
-      status = FALSE,
-      positions = lapply(revdeps, function(dep) {
-        list(
-          filename = dep,
-          line_number = NA_integer_,
-          column_number = NA_integer_,
-          ranges = list(),
-          line = dep
-        )
-      })
-    )
+    revdep_info_message(revdeps)
+    TRUE
   }
 )
