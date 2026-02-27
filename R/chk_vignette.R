@@ -8,31 +8,52 @@ vignette_files <- function(path) {
              full.names = TRUE, recursive = TRUE)
 }
 
-skip_eval_false <- function(options) {
-  if (isFALSE(options$eval)) options$purl <- FALSE
-  options
+is_skipped_chunk <- function(header) {
+  grepl("eval\\s*=\\s*(FALSE|F)\\b", header) ||
+    grepl("purl\\s*=\\s*(FALSE|F)\\b", header)
 }
 
-purl_vignette <- function(f) {
-  r_file <- tempfile(fileext = ".R")
-  old_hooks <- knitr::opts_hooks$get()
-  on.exit(knitr::opts_hooks$restore(old_hooks))
+extract_vignette_code <- function(f) {
+  lines <- tryCatch(readLines(f, warn = FALSE), error = function(e) NULL)
+  if (is.null(lines)) return(NULL)
+  n <- length(lines)
+  ext <- tolower(tools::file_ext(f))
 
-  knitr::opts_hooks$set(eval = skip_eval_false)
+  if (ext %in% c("rmd", "qmd")) {
+    chunk_starts <- grep("^```\\s*\\{\\s*r\\b", lines)
+    fence_ends <- grep("^```\\s*$", lines)
+  } else if (ext == "rnw") {
+    chunk_starts <- grep("^<<.*>>=\\s*$", lines)
+    fence_ends <- grep("^@\\s*$", lines)
+  } else {
+    return(NULL)
+  }
 
-  tryCatch({
-    knitr::purl(f, output = r_file, quiet = TRUE, documentation = 2L)
-    r_file
-  }, error = function(e) { unlink(r_file); NULL })
+  if (length(chunk_starts) == 0) return(NULL)
+
+  output <- rep("", n)
+  for (start in chunk_starts) {
+    if (is_skipped_chunk(lines[start])) next
+    end <- fence_ends[fence_ends > start]
+    if (length(end) == 0) next
+    end <- end[1]
+    code_start <- start + 1L
+    code_end <- end - 1L
+    if (code_end >= code_start) {
+      output[code_start:code_end] <- lines[code_start:code_end]
+    }
+  }
+
+  if (all(output == "")) return(NULL)
+  output
 }
 
 vignette_parse_data <- function(f) {
-  r_file <- purl_vignette(f)
-  if (is.null(r_file)) return(NULL)
-  on.exit(unlink(r_file))
+  code_lines <- extract_vignette_code(f)
+  if (is.null(code_lines)) return(NULL)
 
   parsed <- tryCatch(
-    parse(r_file, keep.source = TRUE),
+    parse(text = code_lines, keep.source = TRUE),
     error = function(e) NULL
   )
   if (is.null(parsed) || length(parsed) == 0) return(NULL)
