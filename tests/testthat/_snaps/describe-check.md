@@ -48,9 +48,6 @@
       $has_news
       [1] "NEWS file exists"
       
-      $truefalse_not_tf
-      [1] "TRUE and FALSE is used, not T and F"
-      
       $r_file_extension
       [1] "R scripts use .R file extension, not .r or .q"
       
