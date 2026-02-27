@@ -1,10 +1,6 @@
 #' @include lists.R
 #' @importFrom urlchecker url_check
 
-has_internet <- function() {
-  curl::has_internet()
-}
-
 run_url_check <- function(path, quiet) {
   urlchecker::url_check(path, progress = !quiet)
 }
