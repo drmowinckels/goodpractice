@@ -26,6 +26,11 @@
 #'   the key in `state` and in the warning message on failure.
 #' @param fn A zero-argument function containing the actual work.
 #'   Its return value is stored in `state[[prep_name]]`.
+#'   Although `fn` takes no arguments, it is typically defined as an
+#'   anonymous function inside the calling prep, so it captures the
+#'   caller's `path` and `quiet` variables through R's lexical scoping
+#'   (closures). For example, `function() do_work(path)` will use the
+#'   `path` value from the enclosing prep function's environment.
 #' @param quiet Logical. Passed to [try()] as `silent`.
 #' @return The updated `state` list.
 #' @keywords internal
