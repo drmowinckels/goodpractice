@@ -3,12 +3,12 @@
 #' To see the results, just print it to the screen.
 #'
 #' @param path Path to a package root.
-#' @param checks Character vector, the checks to run. When \code{NULL}
-#'   (the default), all registered checks are run, subject to any
+#' @param checks Character vector, the checks to run. Defaults to
+#'   \code{\link{default_checks}}. Use \code{\link{all_checks}} to list all
+#'   checks, or add optional sets like \code{\link{tidyverse_checks}}.
+#'   When \code{NULL}, all registered checks are run, subject to any
 #'   exclusions from \code{goodpractice.exclude_preps} or
-#'   \code{GP_EXCLUDE_PREPS}. Explicitly passing check names overrides
-#'   any exclusion settings. Use \code{\link{all_checks}} to list
-#'   available checks.
+#'   \code{GP_EXCLUDE_PREPS}.
 #' @param extra_preps Custom preparation functions. See
 #'   \code{\link{make_prep}} on creating preparation functions.
 #' @param extra_checks Custom checks. See \code{\link{make_check}} on
@@ -47,7 +47,7 @@
 
 gp <- function(
   path = ".",
-  checks = NULL,
+  checks = default_checks(),
   extra_preps = NULL,
   extra_checks = NULL,
   quiet = TRUE
