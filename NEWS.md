@@ -1,8 +1,13 @@
 # goodpractice 1.0.5.9000 (dev version)
 
+* New optional tidyverse style guide checks: 21 lintr-based checks plus 2
+  structural checks (R file naming, test file mirroring).
+  Opt in via `checks = c(default_checks(), tidyverse_checks())`.
+* New `default_checks()` and `tidyverse_checks()` helper functions.
+  `gp()` now defaults to `default_checks()` instead of `all_checks()`,
+  keeping optional check sets out of the default run.
 * New `has_readme` and `has_news` checks for package documentation
-  completeness (#45).
-* `gp()` now fails if the path provided to it is not a package (does not contain a
+  completeness (#45).* `gp()` now fails if the path provided to it is not a package (does not contain a
   DESCRIPTION file) (#190, @maelle)
 * goodpractice now uses cli, and no longer depends on crayon and clisymbols (@olivroy, #167).
 * If your editor supports it, goodpractice now prints clickable hyperlinks to console.
