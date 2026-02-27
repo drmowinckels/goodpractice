@@ -77,12 +77,10 @@ call_descendants <- function(pd, fn_call_id) {
 }
 
 check_vignette_calls <- function(state, fn_name, nested_fn = NULL) {
-  vfiles <- vignette_files(state$path)
   problems <- list()
 
-  for (f in vfiles) {
-    pd <- vignette_parse_data(f)
-    if (is.null(pd)) next
+  for (f in names(state$vignette)) {
+    pd <- state$vignette[[f]]
 
     fn_rows <- pd[pd$token == "SYMBOL_FUNCTION_CALL" & pd$text == fn_name, ,
                   drop = FALSE]
@@ -124,7 +122,7 @@ CHECKS$vignette_no_rm_list <- make_check(
 
   description = "Vignettes do not use rm(list = ls())",
   tags = c("best practice", "warning"),
-  preps = character(),
+  preps = "vignette",
 
   gp = paste(
     "do not use rm(list = ls()) in vignettes.",
@@ -141,7 +139,7 @@ CHECKS$vignette_no_setwd <- make_check(
 
   description = "Vignettes do not use setwd()",
   tags = c("best practice", "warning"),
-  preps = character(),
+  preps = "vignette",
 
   gp = paste(
     "do not use setwd() in vignettes.",

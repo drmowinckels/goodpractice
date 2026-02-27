@@ -35,7 +35,7 @@ test_that("vignette_no_rm_list ignores rm() without ls()", {
     "```"
   ), file.path(pkg, "vignettes", "demo.Rmd"))
 
-  state <- list(path = pkg)
+  state <- PREPS$vignette(list(path = pkg), quiet = TRUE)
   expect_true(CHECKS$vignette_no_rm_list$check(state)$status)
 })
 
@@ -77,7 +77,7 @@ test_that("vignette checks ignore non-evaluated chunks", {
     "```"
   ), file.path(pkg, "vignettes", "demo.Rmd"))
 
-  state <- list(path = pkg)
+  state <- PREPS$vignette(list(path = pkg), quiet = TRUE)
   expect_true(CHECKS$vignette_no_rm_list$check(state)$status)
   expect_true(CHECKS$vignette_no_setwd$check(state)$status)
 })
