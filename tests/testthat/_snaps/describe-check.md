@@ -831,7 +831,4 @@
       $tidyverse_export_order
       [1] "Exported functions are defined before internal helpers"
       
-      $truefalse_not_tf
-      [1] "TRUE and FALSE is used, not T and F"
-      
 
