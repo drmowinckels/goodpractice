@@ -18,7 +18,10 @@ test_that("tidyverse_checks() returns only tidyverse_ prefixed checks", {
 test_that("default_checks() excludes tidyverse checks", {
   dc <- default_checks()
   expect_false(any(grepl("^tidyverse_", dc)))
-  expect_equal(sort(c(dc, tv_checks)), sort(all_checks()))
+  expect_equal(
+    sort(c(dc, tv_checks, opt_in_checks())),
+    sort(all_checks())
+  )
 })
 
 test_that("tidyverse lintr checks pass on good fixture", {

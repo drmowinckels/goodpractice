@@ -18,7 +18,8 @@ gp(
 
 \item{checks}{Character vector, the checks to run. Defaults to
 \code{\link{default_checks}}. Use \code{\link{all_checks}} to list all
-checks, or add optional sets like \code{\link{tidyverse_checks}}.
+checks, or add optional sets like \code{\link{tidyverse_checks}} or
+\code{\link{opt_in_checks}}.
 When \code{NULL}, all registered checks are run, subject to any
 exclusions from \code{goodpractice.exclude_preps} or
 \code{GP_EXCLUDE_PREPS}.}

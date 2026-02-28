@@ -1,5 +1,9 @@
 # goodpractice 1.0.5.9000 (dev version)
 
+* New opt-in check mechanism: checks tagged with `"opt-in"` are excluded
+  from `default_checks()` but included in `all_checks()`. Use
+  `opt_in_checks()` to list them, or add them via
+  `checks = c(default_checks(), opt_in_checks())` (#197, #220).
 * New optional tidyverse style guide checks: 21 lintr-based checks plus 2
   structural checks (R file naming, test file mirroring).
   Opt in via `checks = c(default_checks(), tidyverse_checks())`.

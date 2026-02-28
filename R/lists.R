@@ -17,7 +17,22 @@ all_checks <- function() {
 #' @export
 
 default_checks <- function() {
-  setdiff(all_checks(), tidyverse_checks())
+  setdiff(all_checks(), c(tidyverse_checks(), opt_in_checks()))
+}
+
+#' List the names of opt-in checks
+#'
+#' These checks are included in \code{\link{all_checks}} but excluded from
+#' \code{\link{default_checks}}. Include them individually by name or use
+#' \code{checks = c(default_checks(), opt_in_checks())} to add all opt-in
+#' checks to the default set.
+#'
+#' @return Character vector of opt-in check names
+#' @export
+
+opt_in_checks <- function() {
+  opt_in <- vapply(CHECKS, function(chk) "opt-in" %in% chk$tags, logical(1))
+  names(CHECKS)[opt_in]
 }
 
 #' List the names of tidyverse style checks
