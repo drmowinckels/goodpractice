@@ -4,9 +4,9 @@
 #' @importFrom withr with_options
 
 PREPS$covr <- function(state, path = state$path, quiet) {
-  state <- run_prep_step(state, "covr", function() {
+  state <- run_prep_step(state, "covr", function(path, quiet) {
     list(coverage = package_coverage(path, quiet = quiet))
-  }, quiet = quiet)
+  }, path = path, quiet = quiet, silent = quiet)
 
   if (!inherits(state$covr, "try-error")) {
     with_options(

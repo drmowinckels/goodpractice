@@ -3,7 +3,7 @@
 #' @importFrom desc description
 
 PREPS$description <- function(state, path = state$path, quiet) {
-  run_prep_step(state, "description", function() {
+  run_prep_step(state, "description", function(path) {
     description$new(file.path(path, "DESCRIPTION"))
-  }, quiet = quiet)
+  }, path = path, silent = quiet)
 }

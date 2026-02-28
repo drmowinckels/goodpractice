@@ -3,7 +3,7 @@
 
 PREPS$namespace <- function(state, path = state$path, quiet) {
   path <- normalizePath(path)
-  run_prep_step(state, "namespace", function() {
+  run_prep_step(state, "namespace", function(path) {
     parseNamespaceFile(basename(path), file.path(path, ".."))
-  }, quiet = quiet)
+  }, path = path, silent = quiet)
 }

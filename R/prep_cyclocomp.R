@@ -3,7 +3,7 @@
 #' @importFrom cyclocomp cyclocomp_package_dir
 
 PREPS$cyclocomp <- function(state, path = state$path, quiet) {
-  run_prep_step(state, "cyclocomp", function() {
-    cyclocomp_package_dir(path, quiet = quiet)
-  }, quiet = quiet)
+  run_prep_step(state, "cyclocomp", function(path) {
+    cyclocomp_package_dir(path)
+  }, path = path, silent = quiet)
 }
