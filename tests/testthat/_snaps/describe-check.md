@@ -723,12 +723,6 @@
       $rd_has_return
       [1] "Exported functions have \\value in .Rd"
       
-      $rd_examples_dontrun
-      [1] "Examples do not use \\dontrun"
-      
-      $rd_examples_runnable
-      [1] "Examples have runnable code outside \\dontrun/\\donttest"
-      
       $roxygen2_has_export_or_nord
       [1] "Documented functions have @export or @noRd"
       
