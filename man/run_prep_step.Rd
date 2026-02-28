@@ -4,7 +4,7 @@
 \alias{run_prep_step}
 \title{Run a prep step with error handling}
 \usage{
-run_prep_step(state, prep_name, fn, quiet)
+run_prep_step(state, prep_name, fn, ..., silent = FALSE)
 }
 \arguments{
 \item{state}{The goodpractice state list, passed through the prep
@@ -13,16 +13,19 @@ pipeline.}
 \item{prep_name}{Character scalar. Name for this prep step, used as
 the key in \code{state} and in the warning message on failure.}
 
-\item{fn}{A zero-argument function containing the actual work.
+\item{fn}{A function containing the actual work. Receives
+prep-specific arguments via \code{...}.
 Its return value is stored in \code{state[[prep_name]]}.}
 
-\item{quiet}{Logical. Passed to \code{\link[=try]{try()}} as \code{silent}.}
+\item{...}{Arguments forwarded to \code{fn}.}
+
+\item{silent}{Logical. Passed to \code{\link[=try]{try()}} as \code{silent}.}
 }
 \value{
 The updated \code{state} list.
 }
 \description{
-Executes \code{fn()} inside \code{\link[=try]{try()}}, stores the result in
+Executes \code{fn(...)} inside \code{\link[=try]{try()}}, stores the result in
 \code{state[[prep_name]]}, and emits a warning if the step fails.
 Use this when writing new prep functions to avoid duplicating
 the try/warning boilerplate.
@@ -35,9 +38,9 @@ the try/warning boilerplate.
 }
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{PREPS$myprep <- function(state, path = state$path, quiet) \{
-  run_prep_step(state, "myprep", function() \{
+  run_prep_step(state, "myprep", function(path) \{
     do_work(path)
-  \}, quiet = quiet)
+  \}, path = path, silent = quiet)
 \}
 }\if{html}{\out{</div>}}
 \enumerate{
