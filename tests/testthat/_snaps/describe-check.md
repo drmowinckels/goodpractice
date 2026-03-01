@@ -42,6 +42,15 @@
       $description_bugreports
       [1] "BugReports in DESCRIPTION"
       
+      $has_readme
+      [1] "README file exists"
+      
+      $has_news
+      [1] "NEWS file exists"
+      
+      $r_file_extension
+      [1] "R scripts use .R file extension, not .r or .q"
+      
       $lintr_assignment_linter
       [1] "'<-' and not '=' is used for assignment"
       
@@ -80,9 +89,6 @@
       
       $print_return_invisible
       [1] "Print methods return the object invisibly"
-      
-      $r_file_extension
-      [1] "R scripts use .R file extension, not .r or .q"
       
       $rcmdcheck_package_directory_exists
       [1] "Package directory exists"
@@ -827,9 +833,6 @@
       
       $tidyverse_export_order
       [1] "Exported functions are defined before internal helpers"
-      
-      $truefalse_not_tf
-      [1] "TRUE and FALSE is used, not T and F"
       
       $urlchecker_ok
       [1] "All URLs are reachable"
