@@ -1,11 +1,12 @@
 #' @include lists.R
 
 find_calls_shallow <- function(expr, targets) {
-  found <- character()
+  env <- new.env(parent = emptyenv())
+  env$found <- character()
   recurse <- function(e) {
     if (is.call(e)) {
       fn <- deparse(e[[1]])
-      if (fn %in% targets) found <<- c(found, fn)
+      if (fn %in% targets) env$found <- c(env$found, fn)
       if (fn == "function") return()
       for (i in seq_along(e)) recurse(e[[i]])
     } else if (is.recursive(e)) {
@@ -13,11 +14,12 @@ find_calls_shallow <- function(expr, targets) {
     }
   }
   recurse(expr)
-  found
+  env$found
 }
 
 find_on_exit_calls <- function(expr) {
-  calls <- list()
+  env <- new.env(parent = emptyenv())
+  env$calls <- list()
   recurse <- function(e) {
     if (is.call(e)) {
       fn <- deparse(e[[1]])
@@ -27,7 +29,7 @@ find_on_exit_calls <- function(expr) {
         is_empty <- length(args) == 0 ||
           (length(args) == 1 && is.symbol(args[[1]]) && nchar(args[[1]]) == 0)
         has_add <- "add" %in% names(args)
-        calls[[length(calls) + 1]] <<- list(
+        env$calls[[length(env$calls) + 1]] <- list(
           is_empty = is_empty,
           has_add = has_add
         )
@@ -38,7 +40,7 @@ find_on_exit_calls <- function(expr) {
     }
   }
   recurse(expr)
-  calls
+  env$calls
 }
 
 STATE_CHANGING_CALLS <- c(

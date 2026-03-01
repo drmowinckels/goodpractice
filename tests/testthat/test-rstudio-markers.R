@@ -46,24 +46,26 @@ test_that("get_markers returns empty for all-pass results", {
 })
 
 test_that("rstudio_source_markers calls callFun", {
-  called <- FALSE
+  env <- new.env(parent = emptyenv())
+  env$called <- FALSE
   local_mocked_bindings(
     callFun = function(...) {
-      called <<- TRUE
+      env$called <- TRUE
     }
   )
   rstudio_source_markers(gp_obj)
-  expect_true(called)
+  expect_true(env$called)
 })
 
 test_that("rstudio_source_markers returns early with no markers", {
   passing <- gp("good", checks = "description_bugreports")
-  called <- FALSE
+  env <- new.env(parent = emptyenv())
+  env$called <- FALSE
   local_mocked_bindings(
     callFun = function(...) {
-      called <<- TRUE
+      env$called <- TRUE
     }
   )
   rstudio_source_markers(passing)
-  expect_false(called)
+  expect_false(env$called)
 })

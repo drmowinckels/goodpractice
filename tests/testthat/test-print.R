@@ -64,13 +64,14 @@ test_that("print calls rstudio_source_markers when hasFun is TRUE", {
   bad1 <- system.file("bad1", package = "goodpractice")
   x <- gp(bad1, checks = "truefalse_not_tf")
 
-  called <- FALSE
+  env <- new.env(parent = emptyenv())
+  env$called <- FALSE
   local_mocked_bindings(
     hasFun = function(...) TRUE,
     rstudio_source_markers = function(...) {
-      called <<- TRUE
+      env$called <- TRUE
     }
   )
   expect_output(print(x))
-  expect_true(called)
+  expect_true(env$called)
 })

@@ -184,13 +184,14 @@ CHECKS$description_valid_roles <- make_check(
   check = function(state) {
     if(inherits(state$description, "try-error")) return(NA)
 
-    warned <- FALSE
+    env <- new.env(parent = emptyenv())
+    env$warned <- FALSE
     authors <- tryCatch(
       withCallingHandlers(
         state$description$get_authors(),
         warning = function(w) {
           if (grepl("Invalid role", conditionMessage(w))) {
-            warned <<- TRUE
+            env$warned <- TRUE
           }
           invokeRestart("muffleWarning")
         }
@@ -198,7 +199,7 @@ CHECKS$description_valid_roles <- make_check(
       error = function(e) NULL
     )
     if (is.null(authors)) return(NA)
-    !warned
+    !env$warned
   }
 )
 
