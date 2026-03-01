@@ -80,13 +80,13 @@ check_vignette_calls <- function(state, fn_name, nested_fn = NULL) {
   problems <- list()
 
   for (f in names(state$vignette)) {
-    pd <- state$vignette[[f]]
+    entry <- state$vignette[[f]]
+    pd <- entry$parse_data
+    orig_lines <- entry$lines
 
     fn_rows <- pd[pd$token == "SYMBOL_FUNCTION_CALL" & pd$text == fn_name, ,
                   drop = FALSE]
     if (nrow(fn_rows) == 0) next
-
-    orig_lines <- readLines(f, warn = FALSE)
 
     for (i in seq_len(nrow(fn_rows))) {
       if (!is.null(nested_fn)) {
