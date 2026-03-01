@@ -828,4 +828,10 @@
       $tidyverse_export_order
       [1] "Exported functions are defined before internal helpers"
       
+      $urlchecker_ok
+      [1] "All URLs are reachable"
+      
+      $urlchecker_no_redirects
+      [1] "No URLs redirect to a different location"
+      
 
