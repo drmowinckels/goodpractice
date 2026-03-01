@@ -825,6 +825,12 @@
       $truefalse_not_tf
       [1] "TRUE and FALSE is used, not T and F"
       
+      $urlchecker_ok
+      [1] "All URLs are reachable"
+      
+      $urlchecker_no_redirects
+      [1] "No URLs redirect to a different location"
+      
       $vignette_no_rm_list
       [1] "Vignettes do not use rm(list = ls())"
       
