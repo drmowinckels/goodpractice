@@ -63,6 +63,7 @@ BugReports: https://github.com/ropensci-review-tools/goodpractice/issues
 Imports:
     cli,
     covr,
+    curl,
     cyclocomp (>= 1.1.0),
     desc,
     jsonlite,
@@ -72,6 +73,7 @@ Imports:
     rstudioapi,
     spelling,
     tools,
+    urlchecker,
     utils,
     whoami,
     withr
@@ -105,6 +107,7 @@ Collate:
     'chk_spelling.R'
     'chk_tidyverse.R'
     'chk_tnf.R'
+    'chk_urlchecker.R'
     'gp.R'
     'package.R'
     'prep_covr.R'
@@ -118,6 +121,7 @@ Collate:
     'prep_rd.R'
     'prep_spelling.R'
     'prep_tidyverse.R'
+    'prep_urlchecker.R'
     'print.R'
     'rstudio_markers.R'
     'utils.R'
